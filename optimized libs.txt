@@ -1,0 +1,23 @@
+Tested with sample_gui_app executable.
+Program was recompiled after tweakin the optimization flag, and the size of the .exe file was noted.
+"-" in the table means the tested exe.
+
+--- Compiler flags ------------------------------
+Original	/O2 (max speed)
+New		/Os (favor small size)
+
+--- Original size -------------------------------
+0  -				5289 KB
+--- After optimizing ----------------------------
+1  -				5158 KB  -131 KB
+2  wxWidgets			4540 KB  -618 KB
+3  Poco				4507 KB   -33 KB
+4  Boost			4474 KB   -33 KB
+5  CyaSSL, cURL, cURLpp		4405 KB   -69 KB
+------------------------------------------------
+				         -884 KB
+------------------------------------------------
+
+-- After packing -------------------------------
+UPX --brute			1162 KB -3243 KB
+MPRESS -s:			1198 KB -3207 KB
