@@ -41,6 +41,7 @@ void MainFrame::checkForUpdatesOnButtonClick(wxCommandEvent& event) {
             auto progressFile = new aufw::progress::ProgressReaderWriter(
                 std::string(progressFilePathUtf8.data(), progressFilePathUtf8.data() + progressFilePathUtf8.length()));
             progressFile->Load();
+
             if (progressFile->IsReadyToInstall()) {
                 aufw::ui::FoundUpdatesDialog dlg(this, progressFile, APP_NAME, VENDOR_NAME, false);
                 dlg.ShowModal();

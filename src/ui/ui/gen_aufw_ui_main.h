@@ -48,9 +48,9 @@ namespace aufw
 				wxPanel* m_productsPanel;
 				wxListCtrl* m_products;
 				wxMenu* m_menu1;
-				wxPanel* m_downloadProgressPanel;
+				wxPanel* m_progressPanel;
 				wxStaticText* m_staticText7;
-				wxGauge* m_downloadProgress;
+				wxGauge* m_progressGauge;
 				wxPanel* m_footerPanel;
 				wxStaticText* m_appRestartText;
 				wxPanel* m_updateButtonsPanel;

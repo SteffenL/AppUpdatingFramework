@@ -71,23 +71,23 @@ FoundUpdatesDialogBase::FoundUpdatesDialogBase( wxWindow* parent, wxWindowID id,
 	
 	bSizer89->Add( bSizer12, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 	
-	m_downloadProgressPanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_progressPanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer( wxVERTICAL );
 	
-	m_staticText7 = new wxStaticText( m_downloadProgressPanel, wxID_ANY, _("Download progress"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText7 = new wxStaticText( m_progressPanel, wxID_ANY, _("Progress"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText7->Wrap( -1 );
 	bSizer13->Add( m_staticText7, 0, wxALL, 5 );
 	
-	m_downloadProgress = new wxGauge( m_downloadProgressPanel, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL );
-	m_downloadProgress->SetValue( 0 ); 
-	bSizer13->Add( m_downloadProgress, 0, wxEXPAND|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
+	m_progressGauge = new wxGauge( m_progressPanel, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL );
+	m_progressGauge->SetValue( 0 ); 
+	bSizer13->Add( m_progressGauge, 0, wxEXPAND|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
 	
 	
-	m_downloadProgressPanel->SetSizer( bSizer13 );
-	m_downloadProgressPanel->Layout();
-	bSizer13->Fit( m_downloadProgressPanel );
-	bSizer89->Add( m_downloadProgressPanel, 0, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
+	m_progressPanel->SetSizer( bSizer13 );
+	m_progressPanel->Layout();
+	bSizer13->Fit( m_progressPanel );
+	bSizer89->Add( m_progressPanel, 0, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 	
 	m_footerPanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer10;

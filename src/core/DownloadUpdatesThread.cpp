@@ -231,7 +231,7 @@ void DownloadUpdatesThread::downloadNowInternal() {
     if (m_progressFile.HasApplication())
     {
         //nowide::cout << application.UpdateDetails.DisplayName;
-        if (application.State < State::DownloadComplete) {
+        if ((application.State < State::DownloadComplete) || (application.State == State::VerifyFailed)) {
             try {
                 download(application);
                 //nowide::cout << "... " << ((application.State == State::DownloadComplete) ? "OK" : "Failed") << std::endl;
@@ -254,7 +254,7 @@ void DownloadUpdatesThread::downloadNowInternal() {
     std::for_each(components.begin(), components.end(), [&](Product& component) {
         using namespace aufw::progress;
         //nowide::cout << component.UpdateDetails.DisplayName;
-        if (component.State < State::DownloadComplete) {
+        if ((component.State < State::DownloadComplete) || (component.State == State::VerifyFailed)) {
             try {
                 download(component);
                 //nowide::cout << "... " << ((application.State == State::DownloadComplete) ? "OK" : "Failed") << std::endl;

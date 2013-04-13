@@ -45,26 +45,33 @@ bool RestartRequiredEvent::GetContinueInstallUpdates() const { return m_continue
 void RestartRequiredEvent::SetContinueInstallUpdates(bool v) { m_continueInstallUpdates = v; }
 
 BEGIN_EVENT_TABLE(FoundUpdatesDialog, FoundUpdatesDialogBase)
-    EVT_COMMAND(wxID_ANY, DownloadUpdatesThread::StateChangedEvent, FoundUpdatesDialog::OnStateChanged)
-    EVT_COMMAND(wxID_ANY, DownloadUpdatesThread::DownloadsCompleteEvent, FoundUpdatesDialog::OnDownloadsComplete)
+    // Progress
     EVT_COMMAND(wxID_ANY, DownloadUpdatesThread::DownloadProgressEvent, FoundUpdatesDialog::OnDownloadProgress)
+
+    // Failed
     EVT_COMMAND(wxID_ANY, DownloadUpdatesThread::DownloadFailedEvent, FoundUpdatesDialog::OnDownloadFailed)
-    EVT_COMMAND(wxID_ANY, DownloadUpdatesThread::ThreadExitEvent, FoundUpdatesDialog::OnDownloadThreadExit)
-    EVT_COMMAND(wxID_ANY, DownloadUpdatesThread::ThreadExceptionEvent, FoundUpdatesDialog::OnDownloadThreadException)
-
-    EVT_COMMAND(wxID_ANY, VerifyUpdatesThread::StateChangedEvent, FoundUpdatesDialog::OnStateChanged)
-    EVT_COMMAND(wxID_ANY, VerifyUpdatesThread::VerifyCompleteEvent, FoundUpdatesDialog::OnVerifyComplete)
     EVT_COMMAND(wxID_ANY, VerifyUpdatesThread::VerifyFailedEvent, FoundUpdatesDialog::OnVerifyFailed)
-    EVT_COMMAND(wxID_ANY, VerifyUpdatesThread::ThreadExitEvent, FoundUpdatesDialog::OnVerifyThreadExit)
-    EVT_COMMAND(wxID_ANY, VerifyUpdatesThread::ThreadExceptionEvent, FoundUpdatesDialog::OnThreadException)
+    EVT_COMMAND(wxID_ANY, InstallUpdatesThread::InstallFailedEvent, FoundUpdatesDialog::OnInstallFailed)
 
-    EVT_COMMAND(wxID_ANY, InstallUpdatesThread::StateChangedEvent, FoundUpdatesDialog::OnStateChanged)
+    // Complete
+    EVT_COMMAND(wxID_ANY, DownloadUpdatesThread::DownloadsCompleteEvent, FoundUpdatesDialog::OnDownloadsComplete)
+    EVT_COMMAND(wxID_ANY, VerifyUpdatesThread::VerifyCompleteEvent, FoundUpdatesDialog::OnVerifyComplete)
     EVT_COMMAND(wxID_ANY, InstallUpdatesThread::InstallCompleteEvent, FoundUpdatesDialog::OnInstallComplete)
+
+    // State changed
+    EVT_COMMAND(wxID_ANY, DownloadUpdatesThread::StateChangedEvent, FoundUpdatesDialog::OnStateChanged)
+    EVT_COMMAND(wxID_ANY, VerifyUpdatesThread::StateChangedEvent, FoundUpdatesDialog::OnStateChanged)
+    EVT_COMMAND(wxID_ANY, InstallUpdatesThread::StateChangedEvent, FoundUpdatesDialog::OnStateChanged)
+
+    // Thread exit
+    EVT_COMMAND(wxID_ANY, DownloadUpdatesThread::ThreadExitEvent, FoundUpdatesDialog::OnDownloadThreadExit)
+    EVT_COMMAND(wxID_ANY, VerifyUpdatesThread::ThreadExitEvent, FoundUpdatesDialog::OnVerifyThreadExit)
+    EVT_COMMAND(wxID_ANY, InstallUpdatesThread::ThreadExitEvent, FoundUpdatesDialog::OnInstallThreadExit)
+
+    // Thread exception
+    EVT_COMMAND(wxID_ANY, DownloadUpdatesThread::ThreadExceptionEvent, FoundUpdatesDialog::OnDownloadThreadException)
+    EVT_COMMAND(wxID_ANY, VerifyUpdatesThread::ThreadExceptionEvent, FoundUpdatesDialog::OnVerifyThreadException)
     EVT_COMMAND(wxID_ANY, InstallUpdatesThread::ThreadExceptionEvent, FoundUpdatesDialog::OnInstallThreadException)
-
-	/*EVT_COMMAND(wxID_ANY, DownloadUpdatesThread::UpdateErrorEvent, FoundUpdatesDialog::OnUpdateError)
-	EVT_COMMAND(wxID_ANY, DownloadUpdatesThread::ServerErrorEvent, FoundUpdatesDialog::OnServerError)*/
-
 END_EVENT_TABLE()
 
 FoundUpdatesDialog::FoundUpdatesDialog(wxWindow* parent, aufw::progress::ProgressReaderWriter* progressFile,
@@ -73,17 +80,18 @@ FoundUpdatesDialog::FoundUpdatesDialog(wxWindow* parent, aufw::progress::Progres
     m_progressFile(progressFile),
     m_appName(appName),
     m_vendorName(vendorName),
-    m_isInstalling(false),
     m_autoStartInstall(autoStartInstall),
     m_isRestartRequired(false),
-    m_isInstallComplete(false),
-    m_isWorking(false),
-    m_shouldStopUpdating(false),
-    m_shouldDeleteUpdates(false) {}
+    m_shouldDeleteProgress(false),
+    m_currentWorkType(WorkType::None),
+    m_isElevationNeeded(false)
+{
+    resetWorkState();
+}
 
 FoundUpdatesDialog::~FoundUpdatesDialog() {
-    if (m_shouldDeleteUpdates) {
-        deleteUpdates();
+    if (m_shouldDeleteProgress) {
+        deleteProgress();
     }
 }
 
@@ -91,13 +99,26 @@ void FoundUpdatesDialog::OnInitDialog(wxInitDialogEvent& event) {
     //m_progressFile->Load();
     m_appRestartText->SetLabel(wxString::Format(_("%s will restart automatically after installation."), m_appName));
     m_isReadyToInstall = m_progressFile->IsReadyToInstall();
-    hideAllPanels();
-    setupPanels();
-    setupProductList();
+    m_currentWorkType = getRealCurrentWorkType();
+
+#ifdef __WXMSW__
+    // Set shield icon on button
+    if (!Elevation::IsUserAdmin()) {
+        Button_SetElevationRequiredState(static_cast<HWND>(m_updateNow->GetHandle()), true);
+        Button_SetElevationRequiredState(static_cast<HWND>(m_installNow->GetHandle()), true);
+    }
+#else
+#error Not implemented
+#endif
+
     // Add web view
     m_releaseNotes = wxWebView::New(m_releaseNotesContainer, wxID_ANY);
     m_releaseNotesContainer->GetSizer()->Add(m_releaseNotes, wxSizerFlags(1).Expand());
     m_releaseNotesContainer->Layout();
+
+    setupUi();
+    setupProductList();
+
     // Select the first item in the list to load the URL
     if (m_products->GetItemCount() > 0) {
         m_products->SetFocus();
@@ -105,22 +126,13 @@ void FoundUpdatesDialog::OnInitDialog(wxInitDialogEvent& event) {
     }
 
     if (m_autoStartInstall) {
-        installNowOnButtonClick(wxCommandEvent());
+        beginNextWork();
     }
 }
 
 void FoundUpdatesDialog::updateNowOnButtonClick(wxCommandEvent& event) {
-    m_updateNow->Enable(false);
-    m_shouldStopUpdating = false;
-    // Store initial progress
-    m_progressFile->Save();
-    // Save progress file path
-    {
-        wxConfig config(m_appName, m_vendorName);
-        config.Write("Update/ProgressFile", wxString(m_progressFile->GetFilePath()));
-    }
-
-    beginDownload();
+    saveProgress();
+    beginNextWork();
 }
 
 void FoundUpdatesDialog::skipUpdateOnButtonClick(wxCommandEvent& event) {
@@ -144,7 +156,7 @@ void FoundUpdatesDialog::dontUpdateOnButtonClick(wxCommandEvent& event) {
 
     if (m_isWorking)
     {
-        stopUpdating();
+        stopWork();
     }
     else {
         Close();
@@ -242,184 +254,9 @@ void FoundUpdatesDialog::manualDownloadOnUpdateUI(wxUpdateUIEvent& event) {
     event.Enable(!product.UpdateDetails.ManualDownloadUrl.empty());
 }
 
-void FoundUpdatesDialog::OnStateChanged(wxCommandEvent& event) {
-    using namespace aufw::progress;
-    // Update UI
-    auto& product = *static_cast<Product*>(event.GetClientData());
-    auto itemIndex = m_productListIndexMap[&product];
-    m_products->SetItem(itemIndex, 3, wxString::FromUTF8(State::GetStateText(product.State).c_str()));
-}
-
-void FoundUpdatesDialog::OnDownloadsComplete(wxCommandEvent& event) {
-    Freeze();
-    m_downloadProgressPanel->Hide();
-    Layout();
-    Refresh();
-    Update();
-    Thaw();
-
-    auto cancelCallback = [&]() -> bool {
-        return m_shouldStopUpdating;
-    };
-
-    VerifyUpdatesThread::BeginVerify(this, *m_progressFile, cancelCallback);
-}
-
-void FoundUpdatesDialog::OnVerifyComplete(wxCommandEvent& event) {
-    bool isReady = m_progressFile->IsReadyToInstall();
-    if (m_isReadyToInstall != isReady) {
-        m_isReadyToInstall = isReady;
-        m_isInstalling = true;
-        hideAllPanels();
-        setupPanels();
-
-        auto cancelCallback = [&]() -> bool {
-            return m_shouldStopUpdating;
-        };
-
-        InstallUpdatesThread::BeginInstall(this, *m_progressFile, cancelCallback);
-    }
-}
-
-void FoundUpdatesDialog::OnVerifyFailed(wxCommandEvent& event) {
-    m_verifyHasFailed = true;
-    setWorkingState(false);
-}
-
-void FoundUpdatesDialog::OnVerifyThreadExit(wxCommandEvent& event) {
-    if (m_verifyHasFailed) {
-        if (wxMessageBox(_("One or more downloaded files are damaged\n\nWould you like to retry?"), _("Integrity check failed"), wxYES_NO | wxICON_QUESTION) == wxYES) {
-            using namespace aufw::progress;
-
-            if (m_progressFile->HasApplication()) {
-                auto& application = m_progressFile->GetApplicationWritable();
-                if (application.State == State::VerifyFailed) {
-                    application.State = State::DownloadPending;
-                }
-            }
-
-            if (m_progressFile->HaveComponents()) {
-                auto& components = m_progressFile->GetComponentsWritable();
-                std::for_each(components.begin(), components.end(), [&](Product& component) {
-                    using namespace aufw::progress;
-                    if (component.State == State::VerifyFailed) {
-                        component.State = State::DownloadPending;
-                    }
-                });
-            }
-
-            beginDownload();
-        }
-    }
-    else if (m_shouldStopUpdating) {
-
-    }
-}
-
-void FoundUpdatesDialog::OnInstallComplete(wxCommandEvent& event) {
-    setWorkingState(false);
-    m_isInstalling = false;
-    // Cleanup
-    m_progressFile->CleanupFiles();
-    // Notify that restart is required
-    m_isInstallComplete = true;
-    m_isRestartRequired = true;
-    m_isElevationNeeded = false;
-    Close(true);
-}
-
-void FoundUpdatesDialog::OnDownloadThreadException(wxCommandEvent& event) {
-    OnThreadException(event);
-}
-
-void FoundUpdatesDialog::OnInstallThreadException(wxCommandEvent& event) {
-    if (aufw::Elevation::IsUserAdmin()) {
-        OnThreadException(event);
-    }
-    else {
-        // Notify that restart is required (elevated)
-        RestartRequiredEvent e;
-        e.SetElevationNeeded(true);
-        e.SetContinueInstallUpdates(true);
-        bool canClose = true;
-        if (GetParent()->GetEventHandler()->ProcessEvent(e)) {
-            if (e.GetVeto()) {
-                canClose = false;
-                m_isInstalling = false;
-                hideAllPanels();
-                setupPanels();
-            }
-        }
-
-        setWorkingState(false);
-
-        if (canClose) {
-            m_isInstallComplete = false;
-            m_isRestartRequired = true;
-            m_isElevationNeeded = true;
-            Close(true);
-        }
-        else {
-            m_isInstallComplete = false;
-            m_isRestartRequired = false;
-            m_isElevationNeeded = false;
-        }
-    }
-}
-
-void FoundUpdatesDialog::OnDownloadProgress(wxCommandEvent& event) {
-    m_downloadProgress->SetValue(event.GetInt());
-}
-
-void FoundUpdatesDialog::OnDownloadFailed(wxCommandEvent& event) {
-    m_downloadHasFailed = true;
-    setWorkingState(false);
-}
-
-void FoundUpdatesDialog::OnUpdateError(wxCommandEvent& event) {}
-
-void FoundUpdatesDialog::OnServerError(wxCommandEvent& event) {}
-
-void FoundUpdatesDialog::OnThreadException(wxCommandEvent& event) {
-    boost::exception_ptr* exceptionPtr = static_cast<boost::exception_ptr*>(event.GetClientData());
-    assert(exceptionPtr);
-    // Clone exception
-    boost::exception_ptr exception(*exceptionPtr);
-    // Delete original exception object
-    delete exceptionPtr;
-
-    if (exception)
-    {
-        try {
-            boost::rethrow_exception(exception);
-        }
-        catch (std::exception& ex) {
-            wxMessageBox(ex.what(), wxEmptyString, wxOK | wxICON_ERROR, this);
-        }
-    }
-}
-
-/*
-void FoundUpdatesDialog::OnJobStepProgress(aufw::job::StepProgressArg& arg) {
-    
-}*/
 
 void FoundUpdatesDialog::installNowOnButtonClick(wxCommandEvent& event) {
-    setWorkingState(true);
-    Freeze();
-    m_installButtonsPanel->Hide();
-    Layout();
-    Refresh();
-    Update();
-    Thaw();
-    m_isInstalling = true;
-    m_shouldStopUpdating = false;
-
-    auto cancelCallback = [&]() -> bool {
-        return m_shouldStopUpdating;
-    };
-
-    InstallUpdatesThread::BeginInstall(this, *m_progressFile, cancelCallback);
+    beginWork(WorkType::Install);
 }
 
 void FoundUpdatesDialog::dontInstallOnButtonClick(wxCommandEvent& event) {
@@ -440,46 +277,32 @@ void FoundUpdatesDialog::hideAllPanels() {
     });*/
 }
 
-void FoundUpdatesDialog::setupPanels() {
+void FoundUpdatesDialog::setupUi() {
     using namespace aufw;
 
     Freeze();
+    hideAllPanels();
 
-    if (m_isReadyToInstall) {
-        m_headerText->SetLabel(_("Updates are ready to be installed."));
-
-#ifdef __WXMSW__
-        // Set shield icon on button if needed
-        if (!Elevation::IsUserAdmin()) {
-            Button_SetElevationRequiredState(static_cast<HWND>(m_installNow->GetHandle()), true);
-        }
-#else
-#error Not implemented
-#endif
-
-        if (!m_isInstalling) {
-            m_installButtonsPanel->Show();
-        }
+    switch (m_currentWorkType) {
+    case WorkType::None:
+        setupPreWorkUi();
+        break;
+    case WorkType::Download:
+        setupDownloadUi();
+        break;
+    case WorkType::Verify:
+        setupVerifyUi();
+        break;
+    case WorkType::Install:
+        setupInstallUi();
+        break;
+    case WorkType::PostInstall:
+        setupPostInstallUi();
+        break;
+    default:
+        assert(false);
+        throw std::logic_error("Invalid work type");
     }
-    else {
-        m_headerText->SetLabel(_("An update has been released!"));
-
-#ifdef __WXMSW__
-        // Set shield icon on button
-        if (!Elevation::IsUserAdmin()) {
-            Button_SetElevationRequiredState(static_cast<HWND>(m_updateNow->GetHandle()), true);
-        }
-#else
-#error Not implemented
-#endif
-
-        m_updateButtonsPanel->Show();
-    }
-
-    m_headerPanel->Show();
-    m_releaseNotesContainer->Show();
-    m_productsPanel->Show();
-    m_footerPanel->Show();
 
     Layout();
     Refresh();
@@ -536,7 +359,7 @@ void FoundUpdatesDialog::OnClose(wxCloseEvent& event) {
         dialog.ShowCheckBox(_("Delete updates"));
         if (dialog.ShowModal() == wxID_OK) {
             if (dialog.IsCheckBoxChecked()) {
-                m_shouldDeleteUpdates = true;
+                m_shouldDeleteProgress = true;
             }
         }
         else {
@@ -548,101 +371,422 @@ void FoundUpdatesDialog::OnClose(wxCloseEvent& event) {
     EndModal(0);
 }
 
-void FoundUpdatesDialog::deleteUpdates() {
+void FoundUpdatesDialog::deleteProgress() {
     wxConfig config(m_appName, m_vendorName);
     config.DeleteEntry("Update/ProgressFile");
     m_progressFile->CleanupFiles();
 }
 
+void FoundUpdatesDialog::saveProgress() {
+    m_progressFile->Save();
+    // Save progress file path
+    wxConfig config(m_appName, m_vendorName);
+    config.Write("Update/ProgressFile", wxString(m_progressFile->GetFilePath()));
+}
+
 bool FoundUpdatesDialog::IsRestartNeeded() const { return m_isRestartRequired; }
 bool FoundUpdatesDialog::IsElevationNeeded() const { return m_isElevationNeeded; }
-bool FoundUpdatesDialog::IsInstallComplete() const { return m_isInstallComplete; }
+bool FoundUpdatesDialog::IsInstallComplete() const { return (m_currentWorkType == WorkType::Install) && m_workHasCompleted; }
 
 void FoundUpdatesDialog::beginDownload() {
-    m_verifyHasFailed = false;
-    m_downloadHasFailed = false;
-    setWorkingState(true);
-
-    Freeze();
-    m_downloadProgressPanel->Show();
-    Layout();
-    Refresh();
-    Update();
-    Thaw();
-
-    auto cancelCallback = [&]() -> bool {
-        return m_shouldStopUpdating;
-    };
-
-    DownloadUpdatesThread::BeginDownload(this, *m_progressFile, cancelCallback);
+    DownloadUpdatesThread::BeginDownload(this, *m_progressFile, std::bind(&FoundUpdatesDialog::stopWorkCallback, this));
 }
 
-void FoundUpdatesDialog::setWorkingState(bool isWorking) {
-    m_isWorking = isWorking;
-    m_dontUpdate->Enable(isWorking);
-    //m_dontInstall->Enable(isWorking);
-    if (isWorking) {
-        // Can't close window now
-        SetWindowStyle(GetWindowStyle() & ~wxCLOSE_BOX);
-    }
-    else {
-        // Can close window now
-        SetWindowStyle(GetWindowStyle() | wxCLOSE_BOX);
-    }
+void FoundUpdatesDialog::beginVerify() {
+    VerifyUpdatesThread::BeginVerify(this, *m_progressFile, std::bind(&FoundUpdatesDialog::stopWorkCallback, this));
 }
 
-void FoundUpdatesDialog::OnDownloadThreadExit(wxCommandEvent& event)
-{
-    if (m_downloadHasFailed) {
+void FoundUpdatesDialog::beginInstall() {
+    InstallUpdatesThread::BeginInstall(this, *m_progressFile, std::bind(&FoundUpdatesDialog::stopWorkCallback, this));
+}
+
+void FoundUpdatesDialog::beginPostInstall() {
+    // Notify that restart is required
+    RestartRequiredEvent event;
+    wxPostEvent(m_parent, event);
+
+    m_shouldDeleteProgress = true;
+    Close(true);
+}
+
+void FoundUpdatesDialog::stopWork() {
+    m_shouldStopWork = true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Event handlers
+//////////////////////////////////////////////////////////////////////////
+
+//
+// Progress
+//
+
+void FoundUpdatesDialog::OnDownloadProgress(wxCommandEvent& event) {
+    m_progressGauge->SetValue(event.GetInt());
+}
+
+//
+// Failed
+//
+
+void FoundUpdatesDialog::OnDownloadFailed(wxCommandEvent& event) {
+    m_workHasFailed = true;
+}
+
+void FoundUpdatesDialog::OnVerifyFailed(wxCommandEvent& event) {
+    m_workHasFailed = true;
+}
+
+void FoundUpdatesDialog::OnInstallFailed(wxCommandEvent& event) {
+    m_workHasFailed = true;
+}
+
+//
+// Complete
+//
+
+void FoundUpdatesDialog::OnDownloadsComplete(wxCommandEvent& event) {
+    m_workHasCompleted = true;
+}
+
+void FoundUpdatesDialog::OnVerifyComplete(wxCommandEvent& event) {
+    m_workHasCompleted = true;
+}
+
+void FoundUpdatesDialog::OnInstallComplete(wxCommandEvent& event) {
+    m_workHasCompleted = true;
+    m_isRestartRequired = true;
+}
+
+//
+// State changed
+//
+
+void FoundUpdatesDialog::OnStateChanged(wxCommandEvent& event) {
+    using namespace aufw::progress;
+    // Update UI
+    auto& product = *static_cast<Product*>(event.GetClientData());
+    auto itemIndex = m_productListIndexMap[&product];
+    m_products->SetItem(itemIndex, 3, wxString::FromUTF8(State::GetStateText(product.State).c_str()));
+}
+
+//
+// Thread exit
+//
+
+void FoundUpdatesDialog::OnDownloadThreadExit(wxCommandEvent& event) {
+    if (workHasCompleted()) {
+        beginNextWork();
+    }
+    else if (workHasFailed()) {
+        // Display error
+        // Offer to retry
+
         wxRichMessageDialog dialog(
             this,
-            _("Download failed to complete\n\nPlease make sure that you are connected to the internet, or try again later.\nIf you don't wish to update now, you can resume later unless you delete the updates."),
+            wxString::Format(_("%s\n\nYou may continue later; however, to make sure that you download the latest updates, "
+                "waiting too long before you continue is not recommended."), _("Download failed")),
             _("Download failed"),
             wxOK | wxCANCEL | wxCENTER);
-        //dialog.ShowDetailedText(_("Delaying installation isn't recommended"))
-        dialog.SetOKCancelLabels(_("Retry"), _("Don't update"));
-        dialog.ShowCheckBox(_("Delete updates"));
-        if (dialog.ShowModal() != wxID_OK) {
-            if (dialog.IsCheckBoxChecked()) {
-                m_shouldDeleteUpdates = true;
+        dialog.ShowCheckBox(_("Continue later"), true);
+        dialog.SetOKCancelLabels(_("Retry"), _("Cancel"));
+        if (dialog.ShowModal() == wxID_CANCEL) {
+            if (!dialog.IsCheckBoxChecked()) {
+                m_shouldDeleteProgress = true;
             }
 
             Close(true);
-            return;
         }
-
-        using namespace aufw::progress;
-
-        if (m_progressFile->HasApplication()) {
-            auto& application = m_progressFile->GetApplicationWritable();
-            if (application.State == State::DownloadFailed) {
-                application.State = State::DownloadPending;
-            }
+        else {
+            // Retry
+            beginWork(WorkType::Download);
         }
-
-        if (m_progressFile->HaveComponents()) {
-            auto& components = m_progressFile->GetComponentsWritable();
-            std::for_each(components.begin(), components.end(), [&](Product& component) {
-                using namespace aufw::progress;
-                if (component.State == State::DownloadFailed) {
-                    component.State = State::DownloadPending;
-                }
-            });
-        }
-
-        m_shouldStopUpdating = false;
-        beginDownload();
     }
-    else if (m_shouldStopUpdating) {
-        m_shouldStopUpdating = false;
-        setWorkingState(false);
+    else if (workWasStopped()) {
+        // Display message
+        wxRichMessageDialog dialog(
+            this,
+            wxString::Format(_("%s\n\nYou may continue later; however, to make sure that you install the latest updates, "
+                "waiting too long before you continue is not recommended."), _("Download was stopped")),
+            _("Download was stopped"),
+            wxOK | wxCENTER);
+        dialog.ShowCheckBox(_("Continue later"), true);
+        dialog.ShowModal();
+        if (!dialog.IsCheckBoxChecked()) {
+            m_shouldDeleteProgress = true;
+        }
+
+        Close(true);
     }
 }
 
-void FoundUpdatesDialog::stopUpdating()
-{
+void FoundUpdatesDialog::OnVerifyThreadExit(wxCommandEvent& event) {
+    if (workHasCompleted()) {
+        beginNextWork();
+    }
+    else if (workHasFailed()) {
+        // Display error
+        // Offer to retry
+
+        wxRichMessageDialog dialog(
+            this,
+            wxString::Format(_("%s\n\nThis may, for example, happen if the internet connection is unstable, or because of hardware faults. "
+                "For security reasons, non-verified files will not be installed."), _("A downloaded file is damaged")),
+            _("Verification failed"),
+            wxOK | wxCANCEL | wxCENTER);
+        dialog.ShowCheckBox(_("Continue later"), true);
+        dialog.SetOKCancelLabels(_("Retry"), _("Cancel"));
+        if (dialog.ShowModal() == wxID_CANCEL) {
+            if (!dialog.IsCheckBoxChecked()) {
+                m_shouldDeleteProgress = true;
+            }
+
+            Close(true);
+        }
+        else {
+            // Retry
+            beginWork(WorkType::Download);
+        }
+    }
+    else if (workWasStopped()) {
+        // Display message
+        wxRichMessageDialog dialog(
+            this,
+            wxString::Format(_("%s\n\nYou may continue later; however, to make sure that you install the latest updates, waiting too long before you continue is not recommended."), _("Verification was stopped")),
+            _("Verification was stopped"),
+            wxOK | wxCENTER);
+        dialog.ShowCheckBox(_("Continue later"), true);
+        dialog.ShowModal();
+        if (!dialog.IsCheckBoxChecked()) {
+            m_shouldDeleteProgress = true;
+        }
+
+        Close(true);
+    }
+}
+
+void FoundUpdatesDialog::OnInstallThreadExit(wxCommandEvent& event) {
+    if (workHasCompleted()) {
+        beginNextWork();
+    }
+    else if (workHasFailed()) {
+        // Maybe elevation is needed
+        if (!Elevation::IsUserAdmin()) {
+            // Notify that restart is required (elevated)
+            RestartRequiredEvent e;
+            e.SetElevationNeeded(true);
+            e.SetContinueInstallUpdates(true);
+            bool canClose = true;
+            if (GetParent()->GetEventHandler()->ProcessEvent(e)) {
+                if (e.GetVeto()) {
+                    canClose = false;
+                }
+            }
+
+            if (canClose) {
+                m_isRestartRequired = true;
+                m_isElevationNeeded = true;
+                Close(true);
+                return;
+            }
+
+            resetWorkState();
+            setupUi();
+        }
+        else {
+            // Display error
+            // Offer to retry
+        }
+    }
+    else if (workWasStopped()) {
+        // Display message
+    }
+}
+
+//
+// Thread exception
+//
+
+void FoundUpdatesDialog::OnDownloadThreadException(wxCommandEvent& event) {
+    OnThreadException(event);
+}
+
+void FoundUpdatesDialog::OnVerifyThreadException(wxCommandEvent& event) {
+    OnThreadException(event);
+}
+
+void FoundUpdatesDialog::OnInstallThreadException(wxCommandEvent& event) {
+    OnThreadException(event);
+}
+
+void FoundUpdatesDialog::OnThreadException(wxCommandEvent& event) {
+    boost::exception_ptr* exceptionPtr = static_cast<boost::exception_ptr*>(event.GetClientData());
+    assert(exceptionPtr);
+    // Clone exception
+    boost::exception_ptr exception(*exceptionPtr);
+    // Delete original exception object
+    delete exceptionPtr;
+
+    if (exception) {
+        try {
+            boost::rethrow_exception(exception);
+        }
+        catch (std::exception& ex) {
+            wxLogError(ex.what());
+        }
+    }
+}
+
+bool FoundUpdatesDialog::workHasFailed() const {
+    return m_workHasFailed;
+}
+
+bool FoundUpdatesDialog::workHasCompleted() const {
+    return m_workHasCompleted;
+}
+
+bool FoundUpdatesDialog::workWasStopped() const {
+    return m_shouldStopWork;
+}
+
+void FoundUpdatesDialog::resetWorkState() {
+    m_workHasFailed = false;
+    m_workHasCompleted = false;
+    m_isWorking = false;
+    m_shouldStopWork = false;
+    m_isRestartRequired = false;
+    m_isElevationNeeded = false;
+}
+
+void FoundUpdatesDialog::prepareWorkState() {
+    m_workHasFailed = false;
+    m_workHasCompleted = false;
+    m_isWorking = false;
+}
+
+bool FoundUpdatesDialog::stopWorkCallback() {
+    return m_shouldStopWork;
+}
+
+void FoundUpdatesDialog::beginWork(WorkType::type workType) {
+    prepareWorkState();
+    m_currentWorkType = workType;
+    m_isWorking = true;
+    setupUi();
+
+    switch (workType) {
+    case WorkType::Download:
+        beginDownload();
+        break;
+    case WorkType::Verify:
+        beginVerify();
+        break;
+    case WorkType::Install:
+        beginInstall();
+        break;
+    case WorkType::PostInstall:
+        beginPostInstall();
+        break;
+    default:
+        assert(false);
+        throw std::logic_error("Invalid work type");
+    }
+}
+
+void FoundUpdatesDialog::setupPreWorkUi() {
+    m_headerText->SetLabel(_("Updates have been released!"));
+
+    m_headerPanel->Show();
+    m_releaseNotesContainer->Show();
+    m_productsPanel->Show();
+    m_updateButtonsPanel->Show();
+
+    m_updateNow->Enable(!m_isWorking);
+}
+
+void FoundUpdatesDialog::setupDownloadUi() {
     if (m_isWorking) {
-        m_shouldStopUpdating = true;
+        m_headerText->SetLabel(_("Updates are being downloaded."));
+    }
+    else {
+        m_headerText->SetLabel(_("Updates are ready for download!"));
+    }
+
+    m_headerPanel->Show();
+    m_releaseNotesContainer->Show();
+    m_productsPanel->Show();
+    m_updateButtonsPanel->Show();
+
+    m_progressGauge->SetValue(0);
+    m_progressPanel->Show();
+
+    m_updateNow->Enable(!m_isWorking);
+}
+
+void FoundUpdatesDialog::setupVerifyUi() {
+    if (m_isWorking) {
+        m_headerText->SetLabel(_("Updates are being verified."));
+    }
+    else {
+        m_headerText->SetLabel(_("Updates are ready to be verified."));
+    }
+
+    m_headerPanel->Show();
+    m_releaseNotesContainer->Show();
+    m_productsPanel->Show();
+    m_updateButtonsPanel->Show();
+
+    m_updateNow->Enable(!m_isWorking);
+}
+
+void FoundUpdatesDialog::setupInstallUi() {
+    if (m_isWorking) {
+        m_headerText->SetLabel(_("Updates are being installed."));
+    }
+    else {
+        m_headerText->SetLabel(_("Updates are ready to be installed."));
+    }
+
+    m_headerPanel->Show();
+    m_releaseNotesContainer->Show();
+    m_productsPanel->Show();
+    m_installButtonsPanel->Show();
+
+    m_installNow->Enable(!m_isWorking);
+}
+
+void FoundUpdatesDialog::setupPostInstallUi() {}
+
+void FoundUpdatesDialog::beginNextWork() {
+    if (m_progressFile->InstallIsComplete()) {
+        beginWork(WorkType::PostInstall);
+    }
+    else if (m_progressFile->IsReadyToInstall()) {
+        beginWork(WorkType::Install);
+    }
+    else if (m_progressFile->IsReadyToVerify()) {
+        beginWork(WorkType::Verify);
+    }
+    else if (m_progressFile->IsReadyToDownload()) {
+        beginWork(WorkType::Download);
+    }
+}
+
+FoundUpdatesDialog::WorkType::type FoundUpdatesDialog::getRealCurrentWorkType() const {
+    if (m_progressFile->InstallIsComplete()) {
+        return WorkType::PostInstall;
+    }
+    else if (m_progressFile->IsReadyToInstall()) {
+        return WorkType::Install;
+    }
+    else if (m_progressFile->IsReadyToVerify()) {
+        return WorkType::Verify;
+    }
+    else if (m_progressFile->IsReadyToDownload()) {
+        return WorkType::Download;
+    }
+    else {
+        return WorkType::None;
     }
 }
 

@@ -20,6 +20,7 @@ Job::Job() : m_stepIndex(0) {}
 
 bool Job::Execute() {
     bool isOk = true;
+    m_stepIndex = (m_stepIndex < 0) ? 0 : m_stepIndex;
     // Start with the last attempted step
     for (int i = m_stepIndex, count = m_steps.size(); i < count;) {
         Step& step = *m_steps[i];

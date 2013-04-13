@@ -36,41 +36,68 @@ private:
 wxDECLARE_EVENT(EVT_RESTART_REQUIRED, RestartRequiredEvent);
 
 class FoundUpdatesDialog : public FoundUpdatesDialogBase {
+    struct WorkType {
+        enum type {
+            None,
+            Download,
+            Verify,
+            Install,
+            PostInstall
+        };
+    };
+
 protected:
     //
     // Event handlers
     //
-    virtual void OnStateChanged(wxCommandEvent& event);
+
+    // Progress
+    virtual void OnDownloadProgress(wxCommandEvent& event);
+
+    // Failed
+    virtual void OnDownloadFailed(wxCommandEvent& event);
+    virtual void OnVerifyFailed(wxCommandEvent& event);
+    virtual void OnInstallFailed(wxCommandEvent& event);
+
+    // Complete
     virtual void OnDownloadsComplete(wxCommandEvent& event);
     virtual void OnVerifyComplete(wxCommandEvent& event);
-    virtual void OnVerifyFailed(wxCommandEvent& event);
-    virtual void OnVerifyThreadExit(wxCommandEvent& event);
     virtual void OnInstallComplete(wxCommandEvent& event);
-    virtual void OnInstallThreadException(wxCommandEvent& event);
-    virtual void OnDownloadProgress(wxCommandEvent& event);
-    virtual void OnDownloadFailed(wxCommandEvent& event);
+
+    // State changed
+    virtual void OnStateChanged(wxCommandEvent& event);
+
+    // Thread exit
     virtual void OnDownloadThreadExit(wxCommandEvent& event);
+    virtual void OnVerifyThreadExit(wxCommandEvent& event);
+    virtual void OnInstallThreadExit(wxCommandEvent& event);
+
+    // Thread exception
     virtual void OnDownloadThreadException(wxCommandEvent& event);
-    virtual void OnUpdateError(wxCommandEvent& event);
-    virtual void OnServerError(wxCommandEvent& event);
+    virtual void OnVerifyThreadException(wxCommandEvent& event);
+    virtual void OnInstallThreadException(wxCommandEvent& event);
     virtual void OnThreadException(wxCommandEvent& event);
+
     //virtual void OnJobStepProgress(aufw::job::StepProgressArg& arg);
 
     //
     // Inherited event handlers
     //
     virtual void OnInitDialog(wxInitDialogEvent& event);
+    virtual void OnClose(wxCloseEvent& event);
+
     virtual void updateNowOnButtonClick(wxCommandEvent& event);
     virtual void skipUpdateOnButtonClick(wxCommandEvent& event);
     virtual void dontUpdateOnButtonClick(wxCommandEvent& event);
+    virtual void installNowOnButtonClick(wxCommandEvent& event);
+    virtual void dontInstallOnButtonClick(wxCommandEvent& event);
+
     virtual void productsOnListItemSelected(wxListEvent& event);
+
     virtual void moreInfoOnMenuSelection(wxCommandEvent& event);
     virtual void moreInfoOnUpdateUI(wxUpdateUIEvent& event);
     virtual void manualDownloadOnMenuSelection(wxCommandEvent& event);
     virtual void manualDownloadOnUpdateUI(wxUpdateUIEvent& event);
-    virtual void installNowOnButtonClick(wxCommandEvent& event);
-    virtual void dontInstallOnButtonClick(wxCommandEvent& event);
-    virtual void OnClose(wxCloseEvent& event);
 
 public:
     FoundUpdatesDialog(wxWindow* parent, aufw::progress::ProgressReaderWriter* progressFile,
@@ -90,28 +117,58 @@ private:
     wxWebView* m_releaseNotes;
     std::map<aufw::progress::Product*, long> m_productListIndexMap;
     bool m_isReadyToInstall;
-    bool m_isInstalling;
     bool m_autoStartInstall;
 
     bool m_isRestartRequired;
     bool m_isElevationNeeded;
-    bool m_isInstallComplete;
-    bool m_isWorking;
 
-    bool m_verifyHasFailed;
-    bool m_downloadHasFailed;
-    bool m_shouldStopUpdating;
-    bool m_shouldDeleteUpdates;
+    bool m_shouldDeleteProgress;
 
     void addApplication(aufw::progress::Product& product);
     void addComponent(aufw::progress::Product& product);
+    void deleteProgress();
+    void saveProgress();
+
     void hideAllPanels();
-    void setupPanels();
+    void setupUi();
     void setupProductList();
-    void deleteUpdates();
+
+    void setupPreWorkUi();
+    void setupDownloadUi();
+    void setupVerifyUi();
+    void setupInstallUi();
+    void setupPostInstallUi();
+
+    //
+    // Work
+    //
+
+    bool m_isWorking;
+    bool m_workHasFailed;
+    bool m_workHasCompleted;
+    bool m_shouldStopWork;
+    WorkType::type m_currentWorkType;
+
+    bool workHasFailed() const;
+    bool workHasCompleted() const;
+    bool workWasStopped() const;
+    void resetWorkState();
+    WorkType::type getRealCurrentWorkType() const;
+    // Prepare for next work
+    void prepareWorkState();
+    void beginWork(WorkType::type workType);
+    void stopWork();
+    bool stopWorkCallback();
+
+    void beginNextWork();
     void beginDownload();
-    void setWorkingState(bool isWorking);
-    void stopUpdating();
+    void beginVerify();
+    void beginInstall();
+    void beginPostInstall();
+
+    /*void resetDownloadState();
+    void resetVerifyState();
+    void resetInstallState();*/
 };
 
 } } // namespace

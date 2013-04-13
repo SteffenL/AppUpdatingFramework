@@ -21,6 +21,8 @@ public:
     std::list<Product>& GetComponentsWritable();
     bool HasApplication() const;
     bool HaveComponents() const;
+    bool IsReadyToDownload() const;
+    bool IsReadyToVerify() const;
     bool IsReadyToInstall() const;
     bool InstallIsComplete() const;
 

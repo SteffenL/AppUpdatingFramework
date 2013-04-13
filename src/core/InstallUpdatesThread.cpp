@@ -160,11 +160,13 @@ void InstallUpdatesThread::install(aufw::progress::Product& product) {
         }
 
         bool needPrivileges = false;
+        std::string exceptionStr;
 
         auto job = GetJob(product);
 
-        job->OnExecutionFailed = [&needPrivileges](const job::JobFailureArg& arg) {
+        job->OnExecutionFailed = [&](const job::JobFailureArg& arg) {
             using namespace aufw;
+            exceptionStr = arg.Exception->what();
             //nowide::cout << std::endl << "Installation failed. " << arg.Exception.what() << std::endl;
             if (dynamic_cast<FileException*>(arg.Exception)) {
                 // Probably need more privileges to do anything with files
@@ -202,7 +204,34 @@ void InstallUpdatesThread::install(aufw::progress::Product& product) {
         }
 
         if (!job->Execute()) {
-            throw std::runtime_error("Job failed to complete");
+            if (needPrivileges) {
+                product.State = State::InstallFailed;
+                m_progressFile.Save();
+
+                {
+                    wxCommandEvent event(StateChangedEvent);
+                    event.SetClientData(static_cast<void*>(&product));
+                    wxPostEvent(m_parent, event);
+                }
+
+                {
+                    wxCommandEvent event(InstallFailedEvent);
+                    wxPostEvent(m_parent, event);
+                }
+
+                return;
+            }
+            else {
+                std::string ex("Job failed to complete\n\n");
+                if (exceptionStr.empty()) {
+                    ex += "Reason is unknown.";
+                }
+                else {
+                    ex += exceptionStr;
+                }
+                
+                throw std::runtime_error(ex);
+            }
         }
 
         product.Job = nullptr;

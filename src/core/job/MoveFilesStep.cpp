@@ -77,15 +77,15 @@ void MoveFilesStep::Execute() {
                 }
             }
 
-            try {
-                // Rename file
-                fs::rename(sourcePath, targetPath);
-                // Track file
-                m_completeFiles.push_back(*it);
+            // Rename file
+            boost::system::error_code errorCode;
+            fs::rename(sourcePath, targetPath, errorCode);
+            if (errorCode != boost::system::errc::success) {
+                throw FileException(errorCode.message(), sourcePath, targetPath);
             }
-            catch (boost::filesystem::filesystem_error&) {
-                throw;
-            }
+
+            // Track file
+            m_completeFiles.push_back(*it);
         }
     }
 }

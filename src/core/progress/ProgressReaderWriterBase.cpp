@@ -41,6 +41,52 @@ bool ProgressReaderWriterBase::HaveComponents() const {
     return m_haveComponents;
 }
 
+bool ProgressReaderWriterBase::IsReadyToDownload() const {
+    using namespace aufw::progress;
+
+    auto& application = GetApplication();
+    auto& components = GetComponents();
+
+    // Check if all are complete
+    if (!HasApplication() || ((application.State >= State::DownloadPending) && (application.State < State::DownloadComplete))) {
+        bool isReady = true;
+        std::for_each(components.begin(), components.end(), [&](const Product& component) {
+            using namespace aufw::progress;
+            if ((component.State < State::DownloadPending) || (component.State >= State::DownloadComplete)) {
+                isReady = false;
+                return;
+            }
+        });
+
+        return isReady;
+    }
+
+    return false;
+}
+
+bool ProgressReaderWriterBase::IsReadyToVerify() const {
+    using namespace aufw::progress;
+
+    auto& application = GetApplication();
+    auto& components = GetComponents();
+
+    // Check if all are complete
+    if (!HasApplication() || ((application.State >= State::DownloadComplete) && (application.State < State::VerifyComplete))) {
+        bool isReady = true;
+        std::for_each(components.begin(), components.end(), [&](const Product& component) {
+            using namespace aufw::progress;
+            if ((component.State < State::DownloadComplete) || (component.State >= State::VerifyComplete)) {
+                isReady = false;
+                return;
+            }
+        });
+
+        return isReady;
+    }
+
+    return false;
+}
+
 bool ProgressReaderWriterBase::IsReadyToInstall() const {
     using namespace aufw::progress;
 

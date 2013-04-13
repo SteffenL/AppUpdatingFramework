@@ -110,9 +110,16 @@ bool MyApp::updateStartup(const wxString& progressFilePath, bool autoStartInstal
     }
     catch (std::exception&) {
         wxMessageBox(wxString::Format(_("Cannot install updates\n\nThe progress file appears to be damaged:\n%s"), progressFilePath), _("Error"), wxOK | wxICON_ERROR);
-        // Cleanup what we can
+        // Cleanup and start normally
         progressFile->CleanupFiles();
-        // Proceed in main startup mode
+        m_startupMode = StartupMode::Main;
+        return false;
+    }
+
+    // If installation was completed, no need to continue
+    if (progressFile->InstallIsComplete()) {
+        // Cleanup and start normally
+        progressFile->CleanupFiles();
         m_startupMode = StartupMode::Main;
         return false;
     }
