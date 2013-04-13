@@ -100,7 +100,12 @@ void ProgressReaderWriter::CleanupFiles() const {
         return;
     }
 
-    fs::remove_all(baseDir);
+    boost::system::error_code errorCode;
+    fs::remove_all(baseDir, errorCode);
+
+    if (errorCode.value() != boost::system::errc::success) {
+        throw FileException(errorCode.message(), baseDir.string());
+    }
 }
 
 } } // namespace

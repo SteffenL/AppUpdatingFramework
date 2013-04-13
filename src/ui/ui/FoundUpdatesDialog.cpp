@@ -89,11 +89,10 @@ FoundUpdatesDialog::FoundUpdatesDialog(wxWindow* parent, aufw::progress::Progres
     resetWorkState();
 }
 
-FoundUpdatesDialog::~FoundUpdatesDialog() {
-    if (m_shouldDeleteProgress) {
-        deleteProgress();
-    }
-}
+// Note: Do not cleanup the update progress files since they are still in use
+// Wait until the app has restarted
+
+FoundUpdatesDialog::~FoundUpdatesDialog() {}
 
 void FoundUpdatesDialog::OnInitDialog(wxInitDialogEvent& event) {
     //m_progressFile->Load();

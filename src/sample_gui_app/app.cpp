@@ -11,6 +11,9 @@
 #include <wx/cmdline.h>
 #include <wx/log.h>
 #include <memory>
+#include <Poco/ScopedLock.h>
+#include <Poco/NamedMutex.h>
+#include <Poco/Exception.h>
 
 // Leak detection
 #ifdef _DEBUG
@@ -26,6 +29,16 @@ bool MyApp::OnInit() {
 
     if (!wxApp::OnInit()) {
         return false;
+    }
+
+    try {
+        // Create a mutex so that the this process will wait for the parent process to exit
+        Poco::NamedMutex mutex("BD5B9403-95A3-4789-8801-DA56F034EBAA");
+        Poco::ScopedLock<Poco::NamedMutex> mutexLock(mutex);
+    }
+    catch (Poco::SystemException&) {
+        // Ignore exception thrown when mutex was abandoned
+        // Sadly, other exceptions will also be catched
     }
 
     // Load progress file path
@@ -172,6 +185,10 @@ void MyApp::restartApp(bool continueInstallUpdates, bool elevate, bool& veto, vo
     if (continueInstallUpdates) {
         params = "-ContinueInstallUpdates";
     }
+
+    // Create a mutex so that the new process can wait for this one to exit
+    Poco::NamedMutex mutex("BD5B9403-95A3-4789-8801-DA56F034EBAA");
+    mutex.lock();
 
     if (elevate && !aufw::Elevation::IsUserAdmin()) {
         if (!aufw::Process::LaunchElevated(exePath, params, parentWindow)) {

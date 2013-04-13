@@ -15,6 +15,8 @@
 #include <wx/config.h>
 #include <boost/exception_ptr.hpp>
 #include <Poco/Process.h>
+#include <Poco/ScopedLock.h>
+#include <Poco/NamedMutex.h>
 
 namespace ui {
 
@@ -136,6 +138,10 @@ void MainFrame::restartApp(bool continueInstallUpdates, bool elevate, bool& veto
     if (continueInstallUpdates) {
         params = "-ContinueInstallUpdates";
     }
+
+    // Create a mutex so that the new process can wait for this one to exit
+    Poco::NamedMutex mutex("BD5B9403-95A3-4789-8801-DA56F034EBAA");
+    mutex.lock();
 
     if (elevate) {
         if (!aufw::Process::LaunchElevated(exePath, params, this->GetHandle())) {
