@@ -5,6 +5,7 @@
 
 #define APP_NAME "SampleGuiApp"
 #define VENDOR_NAME "CompanyName"
+#define APP_RELEASE_CHANNEL "main"
 
 struct StartupMode {
     enum type {

@@ -46,7 +46,7 @@ public:
 class Update : public ApiController {
 public:
     Update();
-    void Check(const CheckArg& arg, CheckResult& result);
+    void Check(const CheckArg& arg, CheckResult& result, const std::string& channel);
 
 private:
 

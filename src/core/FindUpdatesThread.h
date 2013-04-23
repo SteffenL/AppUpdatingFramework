@@ -23,11 +23,11 @@ public:
     static const wxEventType ServerErrorEvent;
     static const wxEventType ThreadExceptionEvent;
 
-    FindUpdatesThread(wxEvtHandler* parent, const std::string& appName, const std::string& vendorName);
+    FindUpdatesThread(wxEvtHandler* parent, const std::string& appName, const std::string& vendorName, const std::string& appReleaseChannel);
     virtual void* Entry();
     virtual void OnExit();
     std::string GetProgessFilePath() const;
-    static void BeginCheck(wxEvtHandler* parent, const std::string& appName, const std::string& vendorName, OnCollect_t onCollect);
+    static void BeginCheck(wxEvtHandler* parent, const std::string& appName, const std::string& vendorName, const std::string& appReleaseChannel, OnCollect_t onCollect);
 
     OnCollect_t OnCollect;
 
@@ -36,6 +36,7 @@ private:
     std::string m_progressFilePath;
     std::string m_vendorName;
     std::string m_appName;
+	std::string m_appReleaseChannel;
     wxEvtHandler* m_parent;
 };
 
