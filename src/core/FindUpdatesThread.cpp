@@ -95,8 +95,8 @@ const wxEventType FindUpdatesThread::UpdateErrorEvent = wxNewEventType();
 const wxEventType FindUpdatesThread::ServerErrorEvent = wxNewEventType();
 const wxEventType FindUpdatesThread::ThreadExceptionEvent = wxNewEventType();
 
-FindUpdatesThread::FindUpdatesThread(wxEvtHandler* parent, const std::string& appName, const std::string& vendorName, const std::string& appReleaseChannel)
-    : m_parent(parent), m_appName(appName), m_vendorName(vendorName), m_appReleaseChannel(appReleaseChannel), wxThread() {}
+FindUpdatesThread::FindUpdatesThread(wxEvtHandler* parent, const std::string& appName, const std::string& vendorName, const std::string& appReleaseChannel, SearchMethod::type searchMethod)
+    : m_parent(parent), m_appName(appName), m_vendorName(vendorName), m_appReleaseChannel(appReleaseChannel), m_searchMethod(searchMethod), wxThread() {}
 
 void* FindUpdatesThread::Entry() {
     if (TestDestroy()) {
@@ -119,8 +119,8 @@ void* FindUpdatesThread::Entry() {
 
 void FindUpdatesThread::OnExit() {}
 
-void FindUpdatesThread::BeginCheck(wxEvtHandler* parent, const std::string& appName, const std::string& vendorName, const std::string& appReleaseChannel, OnCollect_t onCollect) {
-    auto thread = new FindUpdatesThread(parent, appName, vendorName, appReleaseChannel);
+void FindUpdatesThread::BeginCheck(wxEvtHandler* parent, const std::string& appName, const std::string& vendorName, const std::string& appReleaseChannel, SearchMethod::type searchMethod, OnCollect_t onCollect) {
+    auto thread = new FindUpdatesThread(parent, appName, vendorName, appReleaseChannel, searchMethod);
     if (thread->Create() != wxTHREAD_NO_ERROR) {
         return;
     }
@@ -145,7 +145,7 @@ void FindUpdatesThread::checkNowInternal() {
 
     try {
         update::Update update;
-        update.Check(checkArg, checkResult, m_appReleaseChannel);
+        update.Check(checkArg, checkResult, m_appReleaseChannel, m_searchMethod);
     }
     catch (std::runtime_error&) {
         /*nowide::cout << "A problem occurred while looking for updates:" << std::endl;

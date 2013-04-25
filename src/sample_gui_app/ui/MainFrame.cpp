@@ -79,7 +79,7 @@ void MainFrame::checkForUpdatesOnButtonClick(wxCommandEvent& event) {
         langCollection.GetResult(components);
     };
 
-    aufw::FindUpdatesThread::BeginCheck(this, APP_NAME, VENDOR_NAME, APP_RELEASE_CHANNEL, onCollect);
+    aufw::FindUpdatesThread::BeginCheck(this, APP_NAME, VENDOR_NAME, APP_RELEASE_CHANNEL, aufw::SearchMethod::CompareLatest, onCollect);
 }
 
 void MainFrame::OnUpdateFound(wxCommandEvent& event) {

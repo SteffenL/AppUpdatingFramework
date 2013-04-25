@@ -66,11 +66,12 @@ void CheckArg::ToJson(const std::list<ProductInstallationInfo>& productInfoList,
 
 Update::Update() {}
 
-void Update::Check(const CheckArg& arg, CheckResult& result, const std::string& channel) {
+void Update::Check(const CheckArg& arg, CheckResult& result, const std::string& channel, SearchMethod::type searchMethod) {
     Json::Value jsonData;
     CheckArg::ToJson(arg.Application, jsonData["application"]);
     CheckArg::ToJson(arg.Components, jsonData["components"]);
-	jsonData["channel"] = channel;
+    jsonData["channel"] = channel;
+    jsonData["searchMethod"] = searchMethod;
 
     Json::Value jsonResponse;
     sendRequest("/api/v2/update/check", jsonData, jsonResponse, "POST");

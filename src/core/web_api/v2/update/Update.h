@@ -1,6 +1,7 @@
 #include "../../ApiController.h"
 #include "../../../ProductInstallationInfo.h"
 #include "../../../ProductUpdateDetails.h"
+#include "../../../SearchMethod.h"
 #include <string>
 #include <list>
 
@@ -46,7 +47,7 @@ public:
 class Update : public ApiController {
 public:
     Update();
-    void Check(const CheckArg& arg, CheckResult& result, const std::string& channel);
+    void Check(const CheckArg& arg, CheckResult& result, const std::string& channel, SearchMethod::type searchMethod);
 
 private:
 

@@ -2,6 +2,7 @@
 #define __UpdateThreadThread__
 
 #include "ProductInstallationInfo.h"
+#include "SearchMethod.h"
 #include <wx/event.h>
 #include <wx/thread.h>
 #include <functional>
@@ -23,11 +24,11 @@ public:
     static const wxEventType ServerErrorEvent;
     static const wxEventType ThreadExceptionEvent;
 
-    FindUpdatesThread(wxEvtHandler* parent, const std::string& appName, const std::string& vendorName, const std::string& appReleaseChannel);
+    FindUpdatesThread(wxEvtHandler* parent, const std::string& appName, const std::string& vendorName, const std::string& appReleaseChannel, SearchMethod::type searchMethod);
     virtual void* Entry();
     virtual void OnExit();
     std::string GetProgessFilePath() const;
-    static void BeginCheck(wxEvtHandler* parent, const std::string& appName, const std::string& vendorName, const std::string& appReleaseChannel, OnCollect_t onCollect);
+    static void BeginCheck(wxEvtHandler* parent, const std::string& appName, const std::string& vendorName, const std::string& appReleaseChannel, SearchMethod::type searchMethod, OnCollect_t onCollect);
 
     OnCollect_t OnCollect;
 
@@ -38,6 +39,7 @@ private:
     std::string m_appName;
 	std::string m_appReleaseChannel;
     wxEvtHandler* m_parent;
+	SearchMethod::type m_searchMethod;
 };
 
 } // namespace

@@ -305,5 +305,8 @@
     <ClInclude Include="..\..\..\src\core\CancelCallback.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\core\SearchMethod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
