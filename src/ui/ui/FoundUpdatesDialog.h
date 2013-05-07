@@ -111,7 +111,7 @@ public:
 private:
     DECLARE_EVENT_TABLE()
 
-    std::unique_ptr<aufw::progress::ProgressReaderWriter> m_progressFile;
+    aufw::progress::ProgressReaderWriter* m_progressFile;
     wxString m_appName;
     wxString m_vendorName;
     wxWebView* m_releaseNotes;
