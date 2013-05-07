@@ -279,19 +279,23 @@ aufw::job::Job* InstallUpdatesThread::GetJob(aufw::progress::Product& product) {
         auto& steps = product.Job->GetSteps();
 
         if (steps.size() > 0) {
-            if (!steps[0].get()) {
-                steps[0] = std::unique_ptr<job::Step>(new job::MoveFilesStep);
+            auto step = steps[0].get() ? static_cast<job::MoveFilesStep*>(steps[0].get()) : new job::MoveFilesStep;
+            if (!step) {
+               throw std::runtime_error("Couldn't get existing/new MoveFilesStep");
             }
 
-            static_cast<job::MoveFilesStep*>(steps[0].get())->Init(m_progressFile.TargetDir, m_fileList, m_progressFile.BackupDir);
+            steps[0] = std::unique_ptr<job::Step>(step);
+            step->Init(m_progressFile.TargetDir, m_fileList, m_progressFile.BackupDir);
         }
 
         if (steps.size() > 1) {
-            if (!steps[1].get()) {
-                steps[1] = std::unique_ptr<job::Step>(new job::UnpackFilePackageStep);
+            auto step = steps[1].get() ? static_cast<job::UnpackFilePackageStep*>(steps[1].get()) : new job::UnpackFilePackageStep;
+            if (!step) {
+                throw std::runtime_error("Couldn't get existing/new UnpackFilePackageStep");
             }
 
-            static_cast<job::UnpackFilePackageStep*>(steps[1].get())->Init(m_package.get(), m_progressFile.TargetDir);
+            steps[1] = std::unique_ptr<job::Step>(step);
+            step->Init(m_package.get(), m_progressFile.TargetDir);
         }
 
 
