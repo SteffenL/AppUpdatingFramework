@@ -107,6 +107,7 @@ public:
     bool IsRestartNeeded() const;
     bool IsElevationNeeded() const;
     bool IsInstallComplete() const;
+    bool WasCanceled() const;
 
 private:
     DECLARE_EVENT_TABLE()
@@ -123,6 +124,7 @@ private:
     bool m_isElevationNeeded;
 
     bool m_shouldDeleteProgress;
+    bool m_wasCanceled;
 
     void addApplication(aufw::progress::Product& product);
     void addComponent(aufw::progress::Product& product);

@@ -84,7 +84,8 @@ FoundUpdatesDialog::FoundUpdatesDialog(wxWindow* parent, aufw::progress::Progres
     m_isRestartRequired(false),
     m_shouldDeleteProgress(false),
     m_currentWorkType(WorkType::None),
-    m_isElevationNeeded(false)
+    m_isElevationNeeded(false),
+    m_wasCanceled(false)
 {
     resetWorkState();
 }
@@ -92,7 +93,13 @@ FoundUpdatesDialog::FoundUpdatesDialog(wxWindow* parent, aufw::progress::Progres
 // Note: Do not cleanup the update progress files since they are still in use
 // Wait until the app has restarted
 
-FoundUpdatesDialog::~FoundUpdatesDialog() {}
+FoundUpdatesDialog::~FoundUpdatesDialog() {
+    // Cleanup if needed
+    if (m_shouldDeleteProgress)
+    {
+        deleteProgress();
+    }
+}
 
 void FoundUpdatesDialog::OnInitDialog(wxInitDialogEvent& event) {
     //m_progressFile->Load();
@@ -357,6 +364,7 @@ void FoundUpdatesDialog::OnClose(wxCloseEvent& event) {
         //dialog.ShowDetailedText(_("Delaying installation isn't recommended"))
         dialog.ShowCheckBox(_("Delete updates"));
         if (dialog.ShowModal() == wxID_OK) {
+            m_wasCanceled = true;
             if (dialog.IsCheckBoxChecked()) {
                 m_shouldDeleteProgress = true;
             }
@@ -787,6 +795,11 @@ FoundUpdatesDialog::WorkType::type FoundUpdatesDialog::getRealCurrentWorkType() 
     else {
         return WorkType::None;
     }
+}
+
+bool FoundUpdatesDialog::WasCanceled() const
+{
+    return m_wasCanceled;
 }
 
 } } // namespace
