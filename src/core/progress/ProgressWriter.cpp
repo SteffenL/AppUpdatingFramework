@@ -24,6 +24,6 @@ void ProgressWriter::Save() {
     m_stream.flush();
 }
 
-ProgressWriter::ProgressWriter(const std::string& filePath) : m_stream(filePath, std::ios::binary) {}
+ProgressWriter::ProgressWriter(const std::string& filePath) : m_stream(filePath.c_str(), std::ios::binary) {}
 
 } } // namespace

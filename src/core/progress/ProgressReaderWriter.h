@@ -3,7 +3,6 @@
 
 #include "ProgressReaderWriterBase.h"
 #include <iostream>
-#include <fstream>
 #include <string>
 #include <mutex>
 
@@ -18,7 +17,6 @@ public:
     void CleanupFiles() const;
 
 private:
-    std::fstream m_stream;
     std::string m_filePath;
     mutable std::mutex m_ioMutex;
 };

@@ -3,8 +3,8 @@
 
 #include "ProgressReaderWriterBase.h"
 #include <iostream>
-#include <fstream>
 #include <string>
+#include <nowide/fstream.hpp>
 
 namespace aufw { namespace progress {
 
@@ -14,7 +14,7 @@ public:
     void Load();
 
 private:
-    std::ifstream m_stream;
+    nowide::ifstream m_stream;
 
 protected:
     // Hashes file

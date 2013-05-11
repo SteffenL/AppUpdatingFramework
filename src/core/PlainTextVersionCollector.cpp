@@ -4,8 +4,8 @@
 #include <json/json.h>
 #include <boost/filesystem.hpp>
 #include <stdexcept>
-#include <fstream>
 #include <iostream>
+#include <nowide/fstream.hpp>
 
 namespace aufw {
 
@@ -16,7 +16,7 @@ PlainTextVersionCollector::PlainTextVersionCollector(const std::string& appName,
     : UpdateInfoCollectorBase(appName), m_filePath(filePath) {}
 
 void PlainTextVersionCollector::Collect() {
-    std::ifstream file(m_filePath);
+	nowide::ifstream file(m_filePath.c_str());
     if (!file.is_open()) {
         if (m_haveDefaultVersion) {
             m_version = m_defaultVersion;

@@ -2,6 +2,7 @@
 #include "../exceptions.h"
 #include <boost/archive/archive_exception.hpp>
 #include <boost/filesystem.hpp>
+#include <nowide/fstream.hpp>
 
 namespace aufw { namespace progress {
 
@@ -10,7 +11,8 @@ ProgressReaderWriter::ProgressReaderWriter(const std::string& filePath) : m_file
 void ProgressReaderWriter::Load() {
     std::lock_guard<std::mutex> lock(m_ioMutex);
 
-    m_stream.open(m_filePath, std::ios::in | std::ios::binary);
+    nowide::fstream m_stream;
+    m_stream.open(m_filePath.c_str(), std::ios::in);
     if (!m_stream.is_open()) {
         throw FileException("Unable to open file", m_filePath);
     }
@@ -58,25 +60,29 @@ void ProgressReaderWriter::Save() {
         }
     }
 
-    m_stream.open(m_filePath, std::ios::out | std::ios::binary);
+    nowide::fstream m_stream;
+    m_stream.open(m_filePath.c_str(), std::ios::out | std::ios::trunc);
     if (!m_stream.is_open()) {
         throw FileException("Unable to open file", m_filePath);
     }
 
     try {
-        using boost::serialization::make_nvp;
-        boost::archive::xml_oarchive ar(m_stream);
+        // Make sure the archive object goes out of scope before closing the stream so that the content is properly written/closed
+        {
+            using boost::serialization::make_nvp;
+            boost::archive::xml_oarchive ar(m_stream);
 
-        ar & make_nvp("TargetDir", TargetDir);
-        ar & make_nvp("BackupDir", BackupDir);
-        ar & make_nvp("DownloadDir", DownloadDir);
+            ar & make_nvp("TargetDir", TargetDir);
+            ar & make_nvp("BackupDir", BackupDir);
+            ar & make_nvp("DownloadDir", DownloadDir);
 
-        if (HasApplication()) {
-            ar & make_nvp("Application", m_application);
-        }
+            if (HasApplication()) {
+                ar & make_nvp("Application", m_application);
+            }
 
-        if (HaveComponents()) {
-            ar & make_nvp("Components", m_components);
+            if (HaveComponents()) {
+                ar & make_nvp("Components", m_components);
+            }
         }
 
         m_stream.close();

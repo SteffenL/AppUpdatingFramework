@@ -14,12 +14,12 @@
 #include <boost/filesystem.hpp>
 #include <nowide/args.hpp>
 #include <nowide/iostream.hpp>
+#include <nowide/fstream.hpp>
 
 #include <string>
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
-#include <fstream>
 
 CURLcode sslContextCallback(void* ctx) {
     // Load CA certificate from memory
@@ -91,7 +91,7 @@ void download(aufw::progress::ProgressReaderWriterBase& progress, aufw::progress
 
         // Get response
         tryCount = 0;
-        std::ofstream responseDataStream;
+        nowide::ofstream responseDataStream;
         DownloadDetails_t& downloadDetails = product.ProgressDetails.Download;
 
         do {
@@ -120,7 +120,7 @@ void download(aufw::progress::ProgressReaderWriterBase& progress, aufw::progress
                     downloadDetails.TotalDownloaded = 0;
                     product.TempFilePath = tempFilePath.string();
 
-                    responseDataStream.open(tempFilePath.string(), std::ios::binary);
+                    responseDataStream.open(tempFilePath.string().c_str(), std::ios::binary);
                     if (!responseDataStream.is_open()) {
                         throw aufw::FileException("Unable to create/write to file", tempFilePath.string());
                     }

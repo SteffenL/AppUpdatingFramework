@@ -2,6 +2,7 @@
 #include "../exceptions.h"
 
 #include <boost/filesystem.hpp>
+#include <nowide/fstream.hpp>
 
 namespace aufw { namespace package {
 
@@ -44,7 +45,7 @@ void DirectorySink::Consume(SourceBase& source) {
         // File
         else {
             // Extract
-            std::ofstream outFile(absoluteFilePath, std::ios::binary);
+			nowide::ofstream outFile(absoluteFilePath.c_str(), std::ios::binary);
             if (!outFile.is_open()) {
                 throw FileException("Cannot create file", absoluteFilePath);
             }

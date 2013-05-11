@@ -97,7 +97,7 @@ FoundUpdatesDialog::~FoundUpdatesDialog() {
     // Cleanup if needed
     if (m_shouldDeleteProgress)
     {
-        deleteProgress();
+        //deleteProgress();
     }
 }
 
@@ -350,6 +350,8 @@ void FoundUpdatesDialog::setupProductList() {
 }
 
 void FoundUpdatesDialog::OnClose(wxCloseEvent& event) {
+    event.Skip();
+
     if (!event.CanVeto()) {
         EndModal(0);
         return;
@@ -409,8 +411,7 @@ void FoundUpdatesDialog::beginInstall() {
 
 void FoundUpdatesDialog::beginPostInstall() {
     // Notify that restart is required
-    RestartRequiredEvent event;
-    wxPostEvent(m_parent, event);
+    wxQueueEvent(m_parent, RestartRequiredEvent().Clone());
 
     m_shouldDeleteProgress = true;
     Close(true);

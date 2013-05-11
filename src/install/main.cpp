@@ -10,13 +10,11 @@
 
 #include <boost/filesystem.hpp>
 #include <nowide/args.hpp>
-#include <nowide/iostream.hpp>
 
 #include <string>
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
-#include <fstream>
 
 void install(aufw::progress::ProgressReaderWriterBase& progress, aufw::progress::Product& product) {
     using namespace aufw;

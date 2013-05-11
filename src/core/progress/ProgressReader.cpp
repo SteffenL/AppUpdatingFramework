@@ -22,6 +22,6 @@ void ProgressReader::Load() {
     ar & make_nvp("Components", m_components);
 }
 
-ProgressReader::ProgressReader(const std::string& filePath) : m_stream(filePath, std::ios::binary) {}
+ProgressReader::ProgressReader(const std::string& filePath) : m_stream(filePath.c_str(), std::ios::binary) {}
 
 } } // namespace

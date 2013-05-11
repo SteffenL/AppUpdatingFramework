@@ -5,6 +5,7 @@
 #include <boost/filesystem.hpp>
 #include <nowide/args.hpp>
 #include <nowide/iostream.hpp>
+#include <nowide/fstream.hpp>
 #include <Poco/SHA1Engine.h>
 #include <Poco/DigestStream.h>
 
@@ -12,7 +13,6 @@
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
-#include <fstream>
 
 void verify(aufw::progress::ProgressReaderWriterBase& progress, aufw::progress::Product& product) {
     using namespace aufw;
@@ -30,7 +30,7 @@ void verify(aufw::progress::ProgressReaderWriterBase& progress, aufw::progress::
             throw FileException("File not found", product.TempFilePath);
         }
 
-        std::ifstream stream(product.TempFilePath, std::ios::binary);
+		nowide::ifstream stream(product.TempFilePath.c_str(), std::ios::binary);
         if (!stream.is_open()) {
             throw FileException("Cannot open file", product.TempFilePath);
         }

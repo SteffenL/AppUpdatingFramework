@@ -567,7 +567,7 @@ void ZipFileReader::Get_File_List(std::vector<std::string>& filenames) const
 std::istream* 
 Gzip_In(const std::string& filename,std::ios::openmode mode)
 {
-    std::ifstream* infile=new std::ifstream(filename.c_str(),mode | std::ios::binary);
+    nowide::ifstream* infile=new nowide::ifstream(filename.c_str(),mode | std::ios::binary);
     GZipFileHeader header;
     bool zipped=header.Read(*infile);
     infile->seekg(0);
@@ -580,7 +580,7 @@ Gzip_In(const std::string& filename,std::ios::openmode mode)
 std::ostream* 
 Gzip_Out(const std::string& filename,std::ios::openmode mode)
 {
-    std::ofstream* outfile=new std::ofstream(filename.c_str(),mode);
+    nowide::ofstream* outfile=new nowide::ofstream(filename.c_str(),mode);
     return new ZIP_FILE_OSTREAM(0,*outfile);
 }
 //#####################################################################
@@ -593,7 +593,7 @@ Gzip_Out(const std::string& filename,std::ios::openmode mode)
 std::istream* 
 Gzip_In(const std::string& filename,std::ios::openmode mode)
 {
-    std::ifstream* infile=new std::ifstream(filename.c_str(),mode | std::ios::binary);
+    nowide::ifstream* infile=new nowide::ifstream(filename.c_str(),mode | std::ios::binary);
     GZipFileHeader header;
     bool zipped=header.Read(*infile);
     

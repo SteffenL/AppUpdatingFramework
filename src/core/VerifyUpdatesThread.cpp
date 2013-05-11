@@ -29,7 +29,7 @@
 #include <Poco/DigestStream.h>
 
 #include <iostream>
-#include <fstream>
+#include <nowide/fstream.hpp>
 #include <algorithm>
 #include <boost/filesystem.hpp>
 
@@ -67,7 +67,7 @@ void* VerifyUpdatesThread::Entry() {
         boost::exception_ptr* exception = new boost::exception_ptr(boost::current_exception());
         wxCommandEvent event(ThreadExceptionEvent);
         event.SetClientData(exception);
-        wxPostEvent(m_parent, event);
+        wxQueueEvent(m_parent, event.Clone());
     }
 
     return nullptr;
@@ -75,7 +75,7 @@ void* VerifyUpdatesThread::Entry() {
 
 void VerifyUpdatesThread::OnExit() {
     wxCommandEvent event(ThreadExitEvent);
-    wxPostEvent(m_parent, event);
+    wxQueueEvent(m_parent, event.Clone());
 }
 
 void VerifyUpdatesThread::BeginVerify(wxEvtHandler* parent, aufw::progress::ProgressReaderWriter& progressFile, CancelCallback_t cancelCallback) {
@@ -100,7 +100,7 @@ void VerifyUpdatesThread::verifyNowInternal() {
 
             wxCommandEvent event(StateChangedEvent);
             event.SetClientData(static_cast<void*>(&application));
-            wxPostEvent(m_parent, event);
+            wxQueueEvent(m_parent, event.Clone());
 
             try {
                 verify(application);
@@ -125,7 +125,7 @@ void VerifyUpdatesThread::verifyNowInternal() {
 
             wxCommandEvent event(StateChangedEvent);
             event.SetClientData(static_cast<void*>(&component));
-            wxPostEvent(m_parent, event);
+            wxQueueEvent(m_parent, event.Clone());
 
             try {
                 verify(component);
@@ -155,7 +155,7 @@ void VerifyUpdatesThread::verifyNowInternal() {
 
         if (isComplete) {
             wxCommandEvent event(VerifyCompleteEvent);
-            wxPostEvent(m_parent, event);
+            wxQueueEvent(m_parent, event.Clone());
             return;
         }
     }
@@ -165,7 +165,7 @@ void VerifyUpdatesThread::verifyNowInternal() {
     if (m_progressFile.HasApplication() && (application.State == State::VerifyFailed)) {
         isFailed = true;
         wxCommandEvent event(VerifyFailedEvent);
-        wxPostEvent(m_parent, event);
+        wxQueueEvent(m_parent, event.Clone());
         return;
     }
 
@@ -179,7 +179,7 @@ void VerifyUpdatesThread::verifyNowInternal() {
 
     if (isFailed) {
         wxCommandEvent event(VerifyFailedEvent);
-        wxPostEvent(m_parent, event);
+        wxQueueEvent(m_parent, event.Clone());
         return;
     }
 }
@@ -203,7 +203,7 @@ void VerifyUpdatesThread::verify(aufw::progress::Product& product) {
     {
         wxCommandEvent event(StateChangedEvent);
         event.SetClientData(static_cast<void*>(&product));
-        wxPostEvent(m_parent, event);
+        wxQueueEvent(m_parent, event.Clone());
     }
 
     try {
@@ -211,7 +211,7 @@ void VerifyUpdatesThread::verify(aufw::progress::Product& product) {
             throw FileException("File not found", product.TempFilePath);
         }
 
-        std::ifstream stream(product.TempFilePath, std::ios::binary);
+		nowide::ifstream stream(product.TempFilePath.c_str(), std::ios::binary);
         if (!stream.is_open()) {
             throw FileException("Cannot open file", product.TempFilePath);
         }
@@ -222,7 +222,7 @@ void VerifyUpdatesThread::verify(aufw::progress::Product& product) {
 
         wxCommandEvent event(StateChangedEvent);
         event.SetClientData(static_cast<void*>(&product));
-        wxPostEvent(m_parent, event);
+        wxQueueEvent(m_parent, event.Clone());
 
         Poco::SHA1Engine hashEngine;
         Poco::DigestOutputStream hashStream(hashEngine);
@@ -237,7 +237,7 @@ void VerifyUpdatesThread::verify(aufw::progress::Product& product) {
                 {
                     wxCommandEvent event(StateChangedEvent);
                     event.SetClientData(static_cast<void*>(&product));
-                    wxPostEvent(m_parent, event);
+                    wxQueueEvent(m_parent, event.Clone());
                 }
 
                 return;
@@ -266,7 +266,7 @@ void VerifyUpdatesThread::verify(aufw::progress::Product& product) {
 
             wxCommandEvent event(StateChangedEvent);
             event.SetClientData(static_cast<void*>(&product));
-            wxPostEvent(m_parent, event);
+            wxQueueEvent(m_parent, event.Clone());
 
             return;
         }
@@ -277,7 +277,7 @@ void VerifyUpdatesThread::verify(aufw::progress::Product& product) {
         {
             wxCommandEvent event(StateChangedEvent);
             event.SetClientData(static_cast<void*>(&product));
-            wxPostEvent(m_parent, event);
+            wxQueueEvent(m_parent, event.Clone());
         }
     }
     catch (std::exception&) {
@@ -286,7 +286,7 @@ void VerifyUpdatesThread::verify(aufw::progress::Product& product) {
 
         wxCommandEvent event(StateChangedEvent);
         event.SetClientData(static_cast<void*>(&product));
-        wxPostEvent(m_parent, event);
+        wxQueueEvent(m_parent, event.Clone());
 
         throw;
     }

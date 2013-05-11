@@ -11,7 +11,6 @@
 #include "core/job/StartProgramStep.h"
 
 #include <iostream>
-#include <fstream>
 #include <algorithm>
 #include <boost/filesystem.hpp>
 
@@ -46,7 +45,7 @@ void* InstallUpdatesThread::Entry() {
         boost::exception_ptr* exception = new boost::exception_ptr(boost::current_exception());
         wxCommandEvent event(ThreadExceptionEvent);
         event.SetClientData(exception);
-        wxPostEvent(m_parent, event);
+        wxQueueEvent(m_parent, event.Clone());
     }
 
     return nullptr;
@@ -54,7 +53,7 @@ void* InstallUpdatesThread::Entry() {
 
 void InstallUpdatesThread::OnExit() {
     wxCommandEvent event(ThreadExitEvent);
-    wxPostEvent(m_parent, event);
+    wxQueueEvent(m_parent, event.Clone());
 }
 
 void InstallUpdatesThread::BeginInstall(wxEvtHandler* parent, aufw::progress::ProgressReaderWriter& progressFile, CancelCallback_t cancelCallback) {
@@ -79,7 +78,7 @@ void InstallUpdatesThread::installNowInternal() {
 
             wxCommandEvent event(StateChangedEvent);
             event.SetClientData(static_cast<void*>(&application));
-            wxPostEvent(m_parent, event);
+            wxQueueEvent(m_parent, event.Clone());
 
             try {
                 install(application);
@@ -103,7 +102,7 @@ void InstallUpdatesThread::installNowInternal() {
 
             wxCommandEvent event(StateChangedEvent);
             event.SetClientData(static_cast<void*>(&component));
-            wxPostEvent(m_parent, event);
+            wxQueueEvent(m_parent, event.Clone());
 
             try {
                 install(component);
@@ -133,7 +132,7 @@ void InstallUpdatesThread::installNowInternal() {
 
         if (isComplete) {
             wxCommandEvent event(InstallCompleteEvent);
-            wxPostEvent(m_parent, event);
+            wxQueueEvent(m_parent, event.Clone());
         }
     }
 }
@@ -153,7 +152,7 @@ void InstallUpdatesThread::install(aufw::progress::Product& product) {
 
         wxCommandEvent event(StateChangedEvent);
         event.SetClientData(static_cast<void*>(&product));
-        wxPostEvent(m_parent, event);
+        wxQueueEvent(m_parent, event.Clone());
 
         if (!fs::exists(product.TempFilePath)) {
             throw FileException("File not found", product.TempFilePath);
@@ -200,7 +199,7 @@ void InstallUpdatesThread::install(aufw::progress::Product& product) {
         {
             wxCommandEvent event(StateChangedEvent);
             event.SetClientData(static_cast<void*>(&product));
-            wxPostEvent(m_parent, event);
+            wxQueueEvent(m_parent, event.Clone());
         }
 
         if (!job->Execute()) {
@@ -211,12 +210,12 @@ void InstallUpdatesThread::install(aufw::progress::Product& product) {
                 {
                     wxCommandEvent event(StateChangedEvent);
                     event.SetClientData(static_cast<void*>(&product));
-                    wxPostEvent(m_parent, event);
+                    wxQueueEvent(m_parent, event.Clone());
                 }
 
                 {
                     wxCommandEvent event(InstallFailedEvent);
-                    wxPostEvent(m_parent, event);
+                    wxQueueEvent(m_parent, event.Clone());
                 }
 
                 return;
@@ -241,7 +240,7 @@ void InstallUpdatesThread::install(aufw::progress::Product& product) {
         {
             wxCommandEvent event(StateChangedEvent);
             event.SetClientData(static_cast<void*>(&product));
-            wxPostEvent(m_parent, event);
+            wxQueueEvent(m_parent, event.Clone());
         }
     }
     catch (std::exception&) {

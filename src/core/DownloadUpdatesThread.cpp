@@ -34,6 +34,7 @@
 
 #include <iostream>
 #include <boost/filesystem.hpp>
+#include <nowide/fstream.hpp>
 #include <cmath>
 
 // Exceptions
@@ -168,7 +169,7 @@ public:
         m_lastProgress = percent;
         wxCommandEvent event(m_thread.DownloadProgressEvent);
         event.SetInt(percent);
-        wxPostEvent(m_parent, event);
+		wxQueueEvent(m_parent, event.Clone());
  
         return 0;
     }
@@ -204,7 +205,7 @@ void* DownloadUpdatesThread::Entry() {
         boost::exception_ptr* exception = new boost::exception_ptr(boost::current_exception());
         wxCommandEvent event(ThreadExceptionEvent);
         event.SetClientData(exception);
-        wxPostEvent(m_parent, event);
+        wxQueueEvent(m_parent, event.Clone());
     }
 
     return nullptr;
@@ -212,7 +213,7 @@ void* DownloadUpdatesThread::Entry() {
 
 void DownloadUpdatesThread::OnExit() {
     wxCommandEvent event(ThreadExitEvent);
-    wxPostEvent(m_parent, event);
+    wxQueueEvent(m_parent, event.Clone());
 }
 
 void DownloadUpdatesThread::BeginDownload(wxEvtHandler* parent, aufw::progress::ProgressReaderWriter& progressFile, CancelCallback_t cancelCallback) {
@@ -287,7 +288,7 @@ void DownloadUpdatesThread::downloadNowInternal() {
 
         if (isComplete) {
             wxCommandEvent event(DownloadsCompleteEvent);
-            wxPostEvent(m_parent, event);
+			wxQueueEvent(m_parent, event.Clone());
         }
     }
 
@@ -296,7 +297,7 @@ void DownloadUpdatesThread::downloadNowInternal() {
     if (m_progressFile.HasApplication() && (application.State == State::DownloadFailed)) {
         isFailed = true;
         wxCommandEvent event(DownloadFailedEvent);
-        wxPostEvent(m_parent, event);
+		wxQueueEvent(m_parent, event.Clone());
         return;
     }
 
@@ -310,7 +311,7 @@ void DownloadUpdatesThread::downloadNowInternal() {
 
     if (isFailed) {
         wxCommandEvent event(DownloadFailedEvent);
-        wxPostEvent(m_parent, event);
+        wxQueueEvent(m_parent, event.Clone());
         return;
     }
 }
@@ -332,7 +333,7 @@ void DownloadUpdatesThread::download(aufw::progress::Product& product) {
 
     wxCommandEvent event(StateChangedEvent);
     event.SetClientData(static_cast<void*>(&product));
-    wxPostEvent(m_parent, event);
+	wxQueueEvent(m_parent, event.Clone());
 
     static const int MAX_REQUEST_TRY_COUNT = 1;
     static const int MAX_RESPONSE_TRY_COUNT = 1;
@@ -350,11 +351,11 @@ void DownloadUpdatesThread::download(aufw::progress::Product& product) {
 
         wxCommandEvent event(StateChangedEvent);
         event.SetClientData(static_cast<void*>(&product));
-        wxPostEvent(m_parent, event);
+		wxQueueEvent(m_parent, event.Clone());
 
         // Get response
         tryCount = 0;
-        std::ofstream responseDataStream;
+        nowide::ofstream responseDataStream;
         DownloadDetails_t& downloadDetails = product.ProgressDetails.Download;
 
         do {
@@ -364,7 +365,7 @@ void DownloadUpdatesThread::download(aufw::progress::Product& product) {
 
                 wxCommandEvent event(StateChangedEvent);
                 event.SetClientData(static_cast<void*>(&product));
-                wxPostEvent(m_parent, event);
+				wxQueueEvent(m_parent, event.Clone());
                 return;
             }
 
@@ -393,7 +394,7 @@ void DownloadUpdatesThread::download(aufw::progress::Product& product) {
                     downloadDetails.TotalDownloaded = 0;
                     product.TempFilePath = tempFilePath.string();
 
-                    responseDataStream.open(tempFilePath.string(), std::ios::binary);
+                    responseDataStream.open(tempFilePath.string().c_str(), std::ios::binary);
                     if (!responseDataStream.is_open()) {
                         throw aufw::FileException("Unable to create/write to file", tempFilePath.string());
                     }
@@ -453,7 +454,7 @@ void DownloadUpdatesThread::download(aufw::progress::Product& product) {
 
                 wxCommandEvent event(StateChangedEvent);
                 event.SetClientData(static_cast<void*>(&product));
-                wxPostEvent(m_parent, event);
+				wxQueueEvent(m_parent, event.Clone());
 
                 isOk = true;
             }
@@ -481,7 +482,7 @@ void DownloadUpdatesThread::download(aufw::progress::Product& product) {
 
         wxCommandEvent event(StateChangedEvent);
         event.SetClientData(static_cast<void*>(&product));
-        wxPostEvent(m_parent, event);
+		wxQueueEvent(m_parent, event.Clone());
 
         throw;
     }

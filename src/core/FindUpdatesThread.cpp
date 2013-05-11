@@ -111,7 +111,7 @@ void* FindUpdatesThread::Entry() {
         boost::exception_ptr* exception = new boost::exception_ptr(boost::current_exception());
         wxCommandEvent event(ThreadExceptionEvent);
         event.SetClientData(exception);
-        wxPostEvent(m_parent, event);
+		wxQueueEvent(m_parent, event.Clone());
     }
 
     return nullptr;
@@ -156,7 +156,7 @@ void FindUpdatesThread::checkNowInternal() {
     if (!checkResult.HasApplicationUpdate && !checkResult.HaveComponentUpdates){
         // No updates found
         wxCommandEvent event(UpdateNotFoundEvent);
-        wxPostEvent(m_parent, event);
+        wxQueueEvent(m_parent, event.Clone());
         // No need to save progress
         return;
     }
@@ -225,7 +225,7 @@ void FindUpdatesThread::checkNowInternal() {
     wxCommandEvent event(UpdateFoundEvent);
     //event.SetString(m_progressFilePath);
     event.SetClientData(progressFile);
-    wxPostEvent(m_parent, event);
+    wxQueueEvent(m_parent, event.Clone());
 }
 
 std::string FindUpdatesThread::GetProgessFilePath() const {

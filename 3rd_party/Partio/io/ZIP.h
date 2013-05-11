@@ -41,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 #include <map>
 #include <stdexcept>
 #include <vector>
+#include <nowide/fstream.hpp>
 
 namespace Partio{
 struct ZipFileHeader;
@@ -54,7 +55,7 @@ std::ostream* Gzip_Out(const std::string& filename,std::ios::openmode mode);
 //#####################################################################
 class ZipFileWriter
 {
-    std::ofstream ostream;
+    nowide::ofstream ostream;
     std::vector<ZipFileHeader*> files;
 public:
 
@@ -70,7 +71,7 @@ public:
 //#####################################################################
 class ZipFileReader
 {
-    std::ifstream istream;
+    nowide::ifstream istream;
 public:
     std::map<std::string,ZipFileHeader*> filename_to_header;
     
