@@ -1,0 +1,174 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-05-11 13:37+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:541
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"This may, for example, happen if the internet connection is unstable, or "
+"because of hardware faults. For security reasons, non-verified files will "
+"not be installed."
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:495
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"You may continue later; however, to make sure that you download the latest "
+"updates, waiting too long before you continue is not recommended."
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:517
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:563
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"You may continue later; however, to make sure that you install the latest "
+"updates, waiting too long before you continue is not recommended."
+msgstr ""
+
+#. m_progressFile->Load();
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:106
+#, c-format
+msgid "%s will restart automatically after installation."
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:542
+msgid "A downloaded file is damaged"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:500
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:546
+msgid "Cancel"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:499
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:521
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:545
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:566
+msgid "Continue later"
+msgstr ""
+
+#. dialog.ShowDetailedText(_("Delaying installation isn't recommended"))
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:367
+msgid "Delete updates"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.cpp:148
+msgid "Don't install now"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.cpp:125
+msgid "Don't update now"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:496
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:497
+msgid "Download failed"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:518
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:519
+msgid "Download was stopped"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.cpp:140
+msgid "Install now"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.cpp:58
+msgid "Manual download"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.cpp:54
+msgid "More info && Discuss"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.cpp:24
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.cpp:96
+msgid "MyLabel"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.cpp:78
+msgid "Progress"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:500
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:546
+msgid "Retry"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.cpp:119
+msgid "Skip this one"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:364
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.h:81
+msgid "Update"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.cpp:110
+msgid "Update now"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:717
+msgid "Updates are being downloaded."
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:752
+msgid "Updates are being installed."
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:736
+msgid "Updates are being verified."
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:720
+msgid "Updates are ready for download!"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:755
+msgid "Updates are ready to be installed."
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:739
+msgid "Updates are ready to be verified."
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:705
+msgid "Updates have been released!"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:363
+msgid ""
+"Updates will not be installed\n"
+"\n"
+"You'll be asked again next time unless you delete them."
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:543
+msgid "Verification failed"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:563
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:564
+msgid "Verification was stopped"
+msgstr ""
