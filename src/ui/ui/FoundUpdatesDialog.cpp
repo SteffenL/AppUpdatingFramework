@@ -1,4 +1,5 @@
 #include "FoundUpdatesDialog.h"
+#include "Texts.h"
 #include "core/FindUpdatesThread.h"
 #include "core/DownloadUpdatesThread.h"
 #include "core/VerifyUpdatesThread.h"
@@ -195,7 +196,7 @@ void FoundUpdatesDialog::addApplication(aufw::progress::Product& product) {
     m_productListIndexMap[&product] = itemIndex;
     m_products->SetItem(itemIndex, 1, wxString::FromUTF8(product.UpdateDetails.Version.ToString().c_str()));
     m_products->SetItem(itemIndex, 2, product.InstalledVersion.ToString());
-    m_products->SetItem(itemIndex, 3, wxString::FromUTF8(State::GetStateText(product.State).c_str()));
+    m_products->SetItem(itemIndex, 3, wxString::FromUTF8(Texts::GetStateText(product.State).c_str()));
 }
 
 void FoundUpdatesDialog::addComponent(aufw::progress::Product& product) {
@@ -209,7 +210,7 @@ void FoundUpdatesDialog::addComponent(aufw::progress::Product& product) {
     m_productListIndexMap[&product] = itemIndex;
     m_products->SetItem(itemIndex, 1, wxString::FromUTF8(product.UpdateDetails.Version.ToString().c_str()));
     m_products->SetItem(itemIndex, 2, product.InstalledVersion.ToString());
-    m_products->SetItem(itemIndex, 3, wxString::FromUTF8(State::GetStateText(product.State).c_str()));
+    m_products->SetItem(itemIndex, 3, wxString::FromUTF8(Texts::GetStateText(product.State).c_str()));
 }
 
 void FoundUpdatesDialog::moreInfoOnMenuSelection(wxCommandEvent& event) {
@@ -475,7 +476,7 @@ void FoundUpdatesDialog::OnStateChanged(wxCommandEvent& event) {
     // Update UI
     auto& product = *static_cast<Product*>(event.GetClientData());
     auto itemIndex = m_productListIndexMap[&product];
-    m_products->SetItem(itemIndex, 3, wxString::FromUTF8(State::GetStateText(product.State).c_str()));
+    m_products->SetItem(itemIndex, 3, wxString::FromUTF8(Texts::GetStateText(product.State).c_str()));
 }
 
 //

@@ -17,10 +17,12 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\ui\ui\FoundUpdatesDialog.cpp" />
     <ClCompile Include="..\..\..\src\ui\ui\gen_aufw_ui_main.cpp" />
+    <ClCompile Include="..\..\..\src\ui\ui\Texts.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\ui\ui\FoundUpdatesDialog.h" />
     <ClInclude Include="..\..\..\src\ui\ui\gen_aufw_ui_main.h" />
+    <ClInclude Include="..\..\..\src\ui\ui\Texts.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.vcxproj">

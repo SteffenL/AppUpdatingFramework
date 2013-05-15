@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-11 13:37+0200\n"
+"POT-Creation-Date: 2013-05-15 17:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:541
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:542
 #, c-format
 msgid ""
 "%s\n"
@@ -26,7 +26,7 @@ msgid ""
 "not be installed."
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:495
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:496
 #, c-format
 msgid ""
 "%s\n"
@@ -35,8 +35,8 @@ msgid ""
 "updates, waiting too long before you continue is not recommended."
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:517
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:563
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:518
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:564
 #, c-format
 msgid ""
 "%s\n"
@@ -46,29 +46,33 @@ msgid ""
 msgstr ""
 
 #. m_progressFile->Load();
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:106
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:107
 #, c-format
 msgid "%s will restart automatically after installation."
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:542
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:543
 msgid "A downloaded file is damaged"
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:500
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:546
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:501
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:547
 msgid "Cancel"
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:499
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:521
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:545
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:566
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:24
+msgid "Complete"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:500
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:522
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:546
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:567
 msgid "Continue later"
 msgstr ""
 
 #. dialog.ShowDetailedText(_("Delaying installation isn't recommended"))
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:367
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:368
 msgid "Delete updates"
 msgstr ""
 
@@ -80,18 +84,47 @@ msgstr ""
 msgid "Don't update now"
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:496
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:11
+msgid "Download complete"
+msgstr ""
+
 #: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:497
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:498
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:10
 msgid "Download failed"
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:518
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:8
+msgid "Download pending"
+msgstr ""
+
 #: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:519
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:520
 msgid "Download was stopped"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:9
+msgid "Downloading"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:23
+msgid "Install complete"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:22
+msgid "Install failed"
 msgstr ""
 
 #: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.cpp:140
 msgid "Install now"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:20
+msgid "Install pending"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:21
+msgid "Installing"
 msgstr ""
 
 #: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.cpp:58
@@ -111,8 +144,8 @@ msgstr ""
 msgid "Progress"
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:500
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:546
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:501
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:547
 msgid "Retry"
 msgstr ""
 
@@ -120,7 +153,23 @@ msgstr ""
 msgid "Skip this one"
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:364
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:19
+msgid "Unpack complete"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:18
+msgid "Unpack failed"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:16
+msgid "Unpack pending"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:17
+msgid "Unpacking"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:365
 #: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.h:81
 msgid "Update"
 msgstr ""
@@ -129,46 +178,62 @@ msgstr ""
 msgid "Update now"
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:717
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:718
 msgid "Updates are being downloaded."
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:752
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:753
 msgid "Updates are being installed."
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:736
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:737
 msgid "Updates are being verified."
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:720
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:721
 msgid "Updates are ready for download!"
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:755
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:756
 msgid "Updates are ready to be installed."
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:739
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:740
 msgid "Updates are ready to be verified."
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:705
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:706
 msgid "Updates have been released!"
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:363
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:364
 msgid ""
 "Updates will not be installed\n"
 "\n"
 "You'll be asked again next time unless you delete them."
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:543
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:544
 msgid "Verification failed"
 msgstr ""
 
-#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:563
 #: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:564
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:565
 msgid "Verification was stopped"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:15
+msgid "Verify complete"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:14
+msgid "Verify failed"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:12
+msgid "Verify pending"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:13
+msgid "Verifying"
 msgstr ""

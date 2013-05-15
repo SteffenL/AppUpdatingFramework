@@ -25,8 +25,6 @@ struct State {
         InstallComplete,
         Complete
     };
-
-    static std::string GetStateText(type state);
 };
 
 } } // namespace
