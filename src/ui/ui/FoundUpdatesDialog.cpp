@@ -321,13 +321,13 @@ void FoundUpdatesDialog::setupProductList() {
     using namespace aufw::progress;
 
     // Insert columns
-    m_products->InsertColumn(0, wxT("Product"));
+    m_products->InsertColumn(0, _("Product"));
     m_products->SetColumnWidth(0, 270);
-    m_products->InsertColumn(1, wxT("Version"));
+    m_products->InsertColumn(1, _("Version"));
     m_products->SetColumnWidth(1, 110);
-    m_products->InsertColumn(2, wxT("Installed version"));
+    m_products->InsertColumn(2, _("Installed version"));
     m_products->SetColumnWidth(2, 110);
-    m_products->InsertColumn(3, wxT("State"));
+    m_products->InsertColumn(3, _("State"));
     m_products->SetColumnWidth(3, 135);
 
     // Set theme for list on MSW for a more native look

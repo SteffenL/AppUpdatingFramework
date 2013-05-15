@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-15 17:34+0200\n"
+"POT-Creation-Date: 2013-05-15 18:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -123,6 +123,10 @@ msgstr ""
 msgid "Install pending"
 msgstr ""
 
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:328
+msgid "Installed version"
+msgstr ""
+
 #: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:21
 msgid "Installing"
 msgstr ""
@@ -140,6 +144,11 @@ msgstr ""
 msgid "MyLabel"
 msgstr ""
 
+#. Insert columns
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:324
+msgid "Product"
+msgstr ""
+
 #: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.cpp:78
 msgid "Progress"
 msgstr ""
@@ -151,6 +160,10 @@ msgstr ""
 
 #: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\gen_aufw_ui_main.cpp:119
 msgid "Skip this one"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:330
+msgid "State"
 msgstr ""
 
 #: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:19
@@ -236,4 +249,8 @@ msgstr ""
 
 #: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\Texts.cpp:13
 msgid "Verifying"
+msgstr ""
+
+#: C:\code\dise\3rd_party\AppUpdatingFramework\src\ui\ui\FoundUpdatesDialog.cpp:326
+msgid "Version"
 msgstr ""
