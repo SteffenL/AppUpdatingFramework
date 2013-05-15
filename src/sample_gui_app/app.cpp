@@ -14,6 +14,8 @@
 #include <Poco/ScopedLock.h>
 #include <Poco/NamedMutex.h>
 #include <Poco/Exception.h>
+#include <boost/locale.hpp>
+#include <boost/filesystem.hpp>
 
 // Leak detection
 #ifdef _DEBUG
@@ -30,6 +32,10 @@ bool MyApp::OnInit() {
     if (!wxApp::OnInit()) {
         return false;
     }
+
+    // Setup locale for UTF-8
+    std::locale::global(boost::locale::generator().generate(""));
+    boost::filesystem::path::imbue(std::locale());
 
     try {
         // Create a mutex so that the this process will wait for the parent process to exit
