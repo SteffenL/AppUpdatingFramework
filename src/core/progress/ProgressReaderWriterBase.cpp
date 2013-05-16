@@ -47,21 +47,23 @@ bool ProgressReaderWriterBase::IsReadyToDownload() const {
     auto& application = GetApplication();
     auto& components = GetComponents();
 
-    // Check if all are complete
-    if (!HasApplication() || ((application.State >= State::DownloadPending) && (application.State < State::DownloadComplete))) {
-        bool isReady = true;
-        std::for_each(components.begin(), components.end(), [&](const Product& component) {
-            using namespace aufw::progress;
-            if ((component.State < State::DownloadPending) || (component.State >= State::DownloadComplete)) {
-                isReady = false;
-                return;
-            }
-        });
+    int numProducts = 0;
+    int n = 0;
 
-        return isReady;
+    if (HasApplication()) {
+        ++numProducts;
+        n += (((application.State >= State::DownloadPending) && (application.State < State::DownloadComplete)) ? 1 : 0);
     }
 
-    return false;
+    numProducts += components.size();
+    std::for_each(components.begin(), components.end(), [&](const Product& component) {
+        using namespace aufw::progress;
+        if ((component.State >= State::DownloadPending) && (component.State < State::DownloadComplete)) {
+            ++n;
+        }
+    });
+
+    return (n == numProducts);
 }
 
 bool ProgressReaderWriterBase::IsReadyToVerify() const {
@@ -70,21 +72,23 @@ bool ProgressReaderWriterBase::IsReadyToVerify() const {
     auto& application = GetApplication();
     auto& components = GetComponents();
 
-    // Check if all are complete
-    if (!HasApplication() || ((application.State >= State::DownloadComplete) && (application.State < State::VerifyComplete))) {
-        bool isReady = true;
-        std::for_each(components.begin(), components.end(), [&](const Product& component) {
-            using namespace aufw::progress;
-            if ((component.State < State::DownloadComplete) || (component.State >= State::VerifyComplete)) {
-                isReady = false;
-                return;
-            }
-        });
+    int numProducts = 0;
+    int n = 0;
 
-        return isReady;
+    if (HasApplication()) {
+        ++numProducts;
+        n += (((application.State >= State::DownloadComplete) && (application.State < State::VerifyComplete)) ? 1 : 0);
     }
 
-    return false;
+    numProducts += components.size();
+    std::for_each(components.begin(), components.end(), [&](const Product& component) {
+        using namespace aufw::progress;
+        if ((component.State >= State::DownloadComplete) && (component.State < State::VerifyComplete)) {
+            ++n;
+        }
+    });
+
+    return (n == numProducts);
 }
 
 bool ProgressReaderWriterBase::IsReadyToInstall() const {
@@ -93,21 +97,23 @@ bool ProgressReaderWriterBase::IsReadyToInstall() const {
     auto& application = GetApplication();
     auto& components = GetComponents();
 
-    // Check if all are complete
-    if (!HasApplication() || ((application.State >= State::VerifyComplete) && (application.State < State::InstallComplete))) {
-        bool isReady = true;
-        std::for_each(components.begin(), components.end(), [&](const Product& component) {
-            using namespace aufw::progress;
-            if ((component.State < State::VerifyComplete) || (component.State >= State::InstallComplete)) {
-                isReady = false;
-                return;
-            }
-        });
+    int numProducts = 0;
+    int n = 0;
 
-        return isReady;
+    if (HasApplication()) {
+        ++numProducts;
+        n += (((application.State >= State::VerifyComplete) && (application.State < State::InstallComplete)) ? 1 : 0);
     }
 
-    return false;
+    numProducts += components.size();
+    std::for_each(components.begin(), components.end(), [&](const Product& component) {
+        using namespace aufw::progress;
+        if ((component.State >= State::VerifyComplete) && (component.State < State::InstallComplete)) {
+            ++n;
+        }
+    });
+
+    return (n == numProducts);
 }
 
 bool ProgressReaderWriterBase::InstallIsComplete() const {
@@ -116,21 +122,49 @@ bool ProgressReaderWriterBase::InstallIsComplete() const {
     auto& application = GetApplication();
     auto& components = GetComponents();
 
-    // Check if all are complete
-    if (!HasApplication() || (application.State >= State::InstallComplete)) {
-        bool isInstalled = true;
-        std::for_each(components.begin(), components.end(), [&](const Product& component) {
-            using namespace aufw::progress;
-            if (component.State < State::InstallComplete) {
-                isInstalled = false;
-                return;
-            }
-        });
+    int numProducts = 0;
+    int n = 0;
 
-        return isInstalled;
+    if (HasApplication()) {
+        ++numProducts;
+        n += ((application.State >= State::InstallComplete) ? 1 : 0);
     }
 
-    return false;
+    numProducts += components.size();
+    std::for_each(components.begin(), components.end(), [&](const Product& component) {
+        using namespace aufw::progress;
+        if (component.State >= State::InstallComplete) {
+            ++n;
+        }
+    });
+
+    return (n == numProducts);
+}
+
+bool ProgressReaderWriterBase::HasProgress() const
+{
+    using namespace aufw::progress;
+
+    auto& application = GetApplication();
+    auto& components = GetComponents();
+
+    int numProducts = 0;
+    int n = 0;
+
+    if (HasApplication()) {
+        ++numProducts;
+        n += ((application.State > State::DownloadPending) ? 1 : 0);
+    }
+
+    numProducts += components.size();
+    std::for_each(components.begin(), components.end(), [&](const Product& component) {
+        using namespace aufw::progress;
+        if (component.State > State::DownloadPending) {
+            ++n;
+        }
+    });
+
+    return (n == numProducts);
 }
 
 } } // namespace

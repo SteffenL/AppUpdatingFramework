@@ -98,14 +98,13 @@ FoundUpdatesDialog::~FoundUpdatesDialog() {
     // Cleanup if needed
     if (m_shouldDeleteProgress)
     {
-        //deleteProgress();
+        deleteProgress();
     }
 }
 
 void FoundUpdatesDialog::OnInitDialog(wxInitDialogEvent& event) {
     //m_progressFile->Load();
     m_appRestartText->SetLabel(wxString::Format(_("%s will restart automatically after installation."), m_appName));
-    m_isReadyToInstall = m_progressFile->IsReadyToInstall();
     m_currentWorkType = getRealCurrentWorkType();
 
 #ifdef __WXMSW__
@@ -358,7 +357,7 @@ void FoundUpdatesDialog::OnClose(wxCloseEvent& event) {
         return;
     }
 
-    if (m_isReadyToInstall) {
+    if (m_progressFile->HasProgress()) {
         wxRichMessageDialog dialog(
             this,
             _("Updates will not be installed\n\nYou'll be asked again next time unless you delete them."),

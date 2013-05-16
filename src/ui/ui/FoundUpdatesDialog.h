@@ -117,7 +117,6 @@ private:
     wxString m_vendorName;
     wxWebView* m_releaseNotes;
     std::map<aufw::progress::Product*, long> m_productListIndexMap;
-    bool m_isReadyToInstall;
     bool m_autoStartInstall;
 
     bool m_isRestartRequired;

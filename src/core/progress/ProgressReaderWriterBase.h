@@ -25,6 +25,7 @@ public:
     bool IsReadyToVerify() const;
     bool IsReadyToInstall() const;
     bool InstallIsComplete() const;
+    bool HasProgress() const;
 
     std::string TargetDir;
     std::string BackupDir;
