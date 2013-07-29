@@ -19,12 +19,12 @@ namespace aufw { namespace job {
 UnpackFilePackageStep::UnpackFilePackageStep() : m_package(nullptr) {}
 
 UnpackFilePackageStep::UnpackFilePackageStep(package::FilePackage* package, const std::string& targetDir, const std::string& backupDir) :
-    m_package(package), m_targetDir(targetDir), m_backupDir(backupDir) {}
+    m_package(package), m_targetDir(boost::filesystem::canonical(targetDir).string()), m_backupDir(boost::filesystem::canonical(backupDir).string()) {}
 
 void UnpackFilePackageStep::Init(package::FilePackage* package, const std::string& targetDir, const std::string& backupDir) {
     m_package = package;
-    m_targetDir = targetDir;
-    m_backupDir = backupDir;
+    m_targetDir = boost::filesystem::canonical(targetDir).string();
+    m_backupDir = boost::filesystem::canonical(backupDir).string();
 }
 
 void UnpackFilePackageStep::Execute() {
@@ -50,26 +50,25 @@ void UnpackFilePackageStep::Rollback() {
 
     // Delete unpacked files
     for (auto it = m_fileList.rbegin(), end(m_fileList.rend()); it != end; ++it) {
-        std::string path(m_targetDir);
-        path += "/";
-        path += *it;
+        fs::path path(m_targetDir);
+        path /= *it;
 
         if (!fs::exists(path)) {
             continue;
         }
 
         // Folder?
-        if (path[path.size() - 1] == '/') {
+        if (it->at(it->size() - 1) == '/') {
             if (fs::is_empty(path)) {
                 if (!fs::remove(path)) {
-                    throw FileException("Cannot delete directory", path);
+                    throw FileException("Cannot delete directory", path.string());
                 }
             }
         }
         // File
         else {
             if (!fs::remove(path)) {
-                throw FileException("Cannot delete file", path);
+                throw FileException("Cannot delete file", path.string());
             }
         }
     }

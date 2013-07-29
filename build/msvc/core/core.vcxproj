@@ -30,7 +30,6 @@
     <ClCompile Include="..\..\..\3rd_party\jsoncpp-0.5.0\json\json_reader.cpp" />
     <ClCompile Include="..\..\..\3rd_party\jsoncpp-0.5.0\json\json_value.cpp" />
     <ClCompile Include="..\..\..\3rd_party\jsoncpp-0.5.0\json\json_writer.cpp" />
-    <ClCompile Include="..\..\..\3rd_party\Partio\io\ZIP.cpp" />
     <ClCompile Include="..\..\..\src\core\AppCollector.cpp" />
     <ClCompile Include="..\..\..\src\core\DownloadUpdatesThread.cpp" />
     <ClCompile Include="..\..\..\src\core\Elevation_msw.cpp" />
@@ -187,7 +186,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(Configuration)\</OutDir>
-    <IncludePath>$(CYASSL_PATH);$(CURLPP_PATH)\include;$(LIBCURL_PATH)\include;$(POCODIR)\Foundation\include;$(ZLIB_INCLUDE_DIR);$(BOOSTDIR);$(SolutionDir)..\..\3rd_party\nowide;$(SolutionDir)..\..\3rd_party\Partio;$(SolutionDir)..\..\3rd_party\jsoncpp-0.5.0;$(SolutionDir)..\..\3rd_party\unittest-cpp\UnitTest++\src;$(WXWIN)\include;$(WXWIN)\lib\vc_dll\mswud;$(IncludePath)</IncludePath>
+    <IncludePath>$(CYASSL_PATH);$(CURLPP_PATH)\include;$(LIBCURL_PATH)\include;$(POCODIR)\Foundation\include;$(POCODIR)\Zip\include;$(ZLIB_INCLUDE_DIR);$(BOOSTDIR);$(SolutionDir)..\..\3rd_party\nowide;$(SolutionDir)..\..\3rd_party\Partio;$(SolutionDir)..\..\3rd_party\jsoncpp-0.5.0;$(SolutionDir)..\..\3rd_party\unittest-cpp\UnitTest++\src;$(WXWIN)\include;$(WXWIN)\lib\vc_dll\mswud;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -197,12 +196,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(Configuration)\</OutDir>
-    <IncludePath>$(CYASSL_PATH);$(CURLPP_PATH)\include;$(LIBCURL_PATH)\include;$(POCODIR)\Foundation\include;$(ZLIB_INCLUDE_DIR);$(BOOSTDIR);$(SolutionDir)..\..\3rd_party\nowide;$(SolutionDir)..\..\3rd_party\Partio;$(SolutionDir)..\..\3rd_party\jsoncpp-0.5.0;$(SolutionDir)..\..\3rd_party\unittest-cpp\UnitTest++\src;$(WXWIN)\include;$(WXWIN)\lib\vc_lib\mswu;$(IncludePath)</IncludePath>
+    <IncludePath>$(CYASSL_PATH);$(CURLPP_PATH)\include;$(LIBCURL_PATH)\include;$(POCODIR)\Foundation\include;$(POCODIR)\Zip\include;$(ZLIB_INCLUDE_DIR);$(BOOSTDIR);$(SolutionDir)..\..\3rd_party\nowide;$(SolutionDir)..\..\3rd_party\Partio;$(SolutionDir)..\..\3rd_party\jsoncpp-0.5.0;$(SolutionDir)..\..\3rd_party\unittest-cpp\UnitTest++\src;$(WXWIN)\include;$(WXWIN)\lib\vc_lib\mswu;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseMT|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(Configuration)\</OutDir>
-    <IncludePath>$(CYASSL_PATH);$(CURLPP_PATH)\include;$(LIBCURL_PATH)\include;$(POCODIR)\Foundation\include;$(ZLIB_INCLUDE_DIR);$(BOOSTDIR);$(SolutionDir)..\..\3rd_party\nowide;$(SolutionDir)..\..\3rd_party\Partio;$(SolutionDir)..\..\3rd_party\jsoncpp-0.5.0;$(SolutionDir)..\..\3rd_party\unittest-cpp\UnitTest++\src;$(WXWIN)\include;$(WXWIN)\lib\vc_lib\mswu;$(IncludePath)</IncludePath>
+    <IncludePath>$(CYASSL_PATH);$(CURLPP_PATH)\include;$(LIBCURL_PATH)\include;$(POCODIR)\Foundation\include;$(POCODIR)\Zip\include;$(ZLIB_INCLUDE_DIR);$(BOOSTDIR);$(SolutionDir)..\..\3rd_party\nowide;$(SolutionDir)..\..\3rd_party\Partio;$(SolutionDir)..\..\3rd_party\jsoncpp-0.5.0;$(SolutionDir)..\..\3rd_party\unittest-cpp\UnitTest++\src;$(WXWIN)\include;$(WXWIN)\lib\vc_lib\mswu;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

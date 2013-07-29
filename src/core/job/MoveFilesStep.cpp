@@ -36,17 +36,15 @@ void MoveFilesStep::Execute() {
     }
 
     for (auto it = m_fileList.begin(), end(m_fileList.end()); it != end; ++it) {
-        std::string sourcePath(m_baseDir);
-        sourcePath += "/";
-        sourcePath += *it;
-        std::string targetPath(m_targetDir);
-        targetPath += "/";
-        targetPath += *it;
+        fs::path sourcePath(m_baseDir);
+        sourcePath /= *it;
+        fs::path targetPath(m_targetDir);
+        targetPath /= *it;
 
         // Move file
 
         // Directory?
-        if (*targetPath.rbegin() == '/') {
+        if (*it->rbegin() == '/') {
             // Make sure it's empty so we don't move files unintentionally
             /*if (fs::is_empty(targetPath)) {
                 fs::rename(sourcePath, targetPath);
@@ -73,7 +71,7 @@ void MoveFilesStep::Execute() {
 
             if (fs::exists(targetPath)) {
                 if (!fs::remove(targetPath)) {
-                    throw FileException("Cannot delete existing target file", targetPath);
+                    throw FileException("Cannot delete existing target file", targetPath.string());
                 }
             }
 
@@ -81,7 +79,7 @@ void MoveFilesStep::Execute() {
             boost::system::error_code errorCode;
             fs::rename(sourcePath, targetPath, errorCode);
             if (errorCode != boost::system::errc::success) {
-                throw FileException(errorCode.message(), sourcePath, targetPath);
+                throw FileException(errorCode.message(), sourcePath.string(), targetPath.string());
             }
 
             // Track file
@@ -101,17 +99,15 @@ void MoveFilesStep::Rollback() {
     }
 
     for (auto it = m_fileList.rbegin(), end(m_fileList.rend()); it != end; ++it) {
-        std::string sourcePath(m_targetDir);
-        sourcePath += "/";
-        sourcePath += *it;
-        std::string targetPath(m_baseDir);
-        targetPath += "/";
-        targetPath += *it;
+        fs::path sourcePath(m_targetDir);
+        sourcePath /= *it;
+        fs::path targetPath(m_baseDir);
+        targetPath /= *it;
 
         // Move file
 
         // Directory?
-        if (*targetPath.rbegin() == '/') {
+        if (*it->rbegin() == '/') {
             // Make sure it's empty so we don't move files unintentionally
             /*if (fs::is_empty(targetPath)) {
                 fs::rename(sourcePath, targetPath);
@@ -131,7 +127,7 @@ void MoveFilesStep::Rollback() {
 
             // Delete existing target file
             fs::path p(targetPath);
-            std::string dir(p.parent_path().string());
+            fs::path dir(p.parent_path());
             // Create parent dir if needed
             if (!fs::exists(dir)) {
                 fs::create_directories(dir);
@@ -139,7 +135,7 @@ void MoveFilesStep::Rollback() {
 
             if (fs::exists(targetPath)) {
                 if (!fs::remove(targetPath)) {
-                    throw FileException("Cannot delete existing target file", targetPath);
+                    throw FileException("Cannot delete existing target file", targetPath.string());
                 }
             }
 
@@ -155,7 +151,7 @@ void MoveFilesStep::Rollback() {
 
             // Delete existing source directory
             fs::path p2(sourcePath);
-            std::string dir2(p2.parent_path().string());
+            fs::path dir2(p2.parent_path());
             if (fs::is_empty(dir2)) {
                 fs::remove(dir2);
             }

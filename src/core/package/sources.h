@@ -4,8 +4,9 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <iosfwd>
 
-namespace Partio { class ZipFileReader; }
+namespace Poco { namespace Zip { class ZipArchive; } }
 
 namespace aufw { namespace package {
 
@@ -23,7 +24,8 @@ public:
     std::istream* GetFile(std::string path);
 
 private:
-    const std::shared_ptr<Partio::ZipFileReader> m_reader;
+	std::unique_ptr<std::istream> m_file;
+	std::unique_ptr<Poco::Zip::ZipArchive> m_zip;
 };
 
 } } // namespace

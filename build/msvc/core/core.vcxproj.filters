@@ -22,12 +22,6 @@
     <Filter Include="3rd_party">
       <UniqueIdentifier>{883a91c1-1a37-455d-9f6c-359e97f1ced1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="3rd_party\Partio">
-      <UniqueIdentifier>{7a85748f-b148-4dd2-b0f8-46a5fdfe9b1b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="3rd_party\Partio\io">
-      <UniqueIdentifier>{c7b51e53-8f88-43c7-8350-cb7a7a50e7a0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="3rd_party\jsoncpp">
       <UniqueIdentifier>{3b5a44f1-dd72-4345-a612-2e54c266a453}</UniqueIdentifier>
     </Filter>
@@ -48,9 +42,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\3rd_party\Partio\io\ZIP.cpp">
-      <Filter>3rd_party\Partio\io</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\core\package\Package.cpp">
       <Filter>package</Filter>
     </ClCompile>
