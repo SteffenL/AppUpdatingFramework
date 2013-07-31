@@ -91,6 +91,7 @@ void ApiController::Impl::SendRequest(const std::string& uri, const Json::Value&
         easy.setOpt(new options::MaxRedirs(8));
         easy.setOpt(new options::WriteStream(&responseData));
         easy.setOpt(new options::SslCtxFunction(sslContextCallback));
+        easy.setOpt(new options::ConnectTimeout(6));
 
         const auto& content  = postData.str();
         const auto contentLength = content.size();
