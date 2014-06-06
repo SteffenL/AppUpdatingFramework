@@ -108,7 +108,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>cyassl.lib;ws2_32.lib;curlpp.lib;libcurld_imp.lib;PocoFoundationd.lib;zlibd.lib;wxmsw29ud_webview.lib;wxmsw29ud_core.lib;wxbase29ud.lib;wxpngd.lib;comctl32.lib;rpcrt4.lib;winmm.lib;UxTheme.lib;%(AdditionalDependencies);vld.lib</AdditionalDependencies>
+      <AdditionalDependencies>cyassl.lib;ws2_32.lib;curlpp.lib;libcurld_imp.lib;PocoFoundationd.lib;zlibd.lib;wxmsw30ud_webview.lib;wxmsw30ud_core.lib;wxbase30ud.lib;wxpngd.lib;comctl32.lib;rpcrt4.lib;winmm.lib;UxTheme.lib;%(AdditionalDependencies);vld.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -127,7 +127,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>cyassl.lib;ws2_32.lib;curlpp.lib;PocoFoundation.lib;zlib.lib;wxmsw29u_webview.lib;wxmsw29u_core.lib;wxbase29u.lib;wxpng.lib;wxjpeg.lib;wxmsw29u_adv.lib;comctl32.lib;rpcrt4.lib;winmm.lib;wsock32.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cyassl.lib;ws2_32.lib;curlpp.lib;PocoFoundation.lib;zlib.lib;wxmsw30u_webview.lib;wxmsw30u_core.lib;wxbase30u.lib;wxpng.lib;wxjpeg.lib;wxmsw30u_adv.lib;comctl32.lib;rpcrt4.lib;winmm.lib;wsock32.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseMT|Win32'">
@@ -146,7 +146,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>cyassl.lib;ws2_32.lib;curlpp.lib;PocoFoundationmt.lib;zlibstaticmt.lib;wxmsw29u_webview.lib;wxmsw29u_core.lib;wxbase29u.lib;wxpng.lib;comctl32.lib;rpcrt4.lib;winmm.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cyassl.lib;ws2_32.lib;curlpp.lib;PocoFoundationmt.lib;zlibstaticmt.lib;wxmsw30u_webview.lib;wxmsw30u_core.lib;wxbase30u.lib;wxpng.lib;comctl32.lib;rpcrt4.lib;winmm.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

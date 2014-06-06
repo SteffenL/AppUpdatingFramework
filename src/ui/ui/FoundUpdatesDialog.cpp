@@ -16,6 +16,7 @@
 #include <wx/msgdlg.h>
 #include <wx/richmsgdlg.h>
 #include <wx/config.h>
+#include <wx/log.h>
 
 #include <boost/exception_ptr.hpp>
 #include <algorithm>
