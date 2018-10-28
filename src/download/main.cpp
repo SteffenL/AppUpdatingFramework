@@ -2,9 +2,6 @@
 #include "core/progress/Product.h"
 #include "core/exceptions.h"
 
-#include "core/web_api/certificates/StartComCaCert.h"
-
-#include <cyassl/ssl.h>
 #include <curl/curl.h>
 #include <curlpp/cURLpp.hpp>
 #include <curlpp/Easy.hpp>
@@ -20,18 +17,6 @@
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
-
-CURLcode sslContextCallback(void* ctx) {
-    // Load CA certificate from memory
-    aufw::web_api::certificates::StartComCaCert cert;
-    const unsigned char* certData = cert.GetData();
-    CyaSSL_CTX_load_verify_buffer(
-        reinterpret_cast<CYASSL_CTX*>(ctx),
-        certData,
-        cert.GetSize(),
-        SSL_FILETYPE_PEM);
-    return CURLE_OK;
-}
 
 struct DownloadFileWriter
 {
@@ -132,7 +117,6 @@ void download(aufw::progress::ProgressReaderWriterBase& progress, aufw::progress
                 //setHttpMethodOpt(easy, httpMethod);
                 easy.setOpt(new options::FollowLocation(true));
                 easy.setOpt(new options::MaxRedirs(8));
-                easy.setOpt(new options::SslCtxFunction(sslContextCallback));
                 easy.setOpt(new options::WriteStream(&responseDataStream));
                 easy.perform();
 
