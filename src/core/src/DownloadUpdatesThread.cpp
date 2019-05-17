@@ -1,4 +1,4 @@
-#include "DownloadUpdatesThread.h"
+#include <aufw/core/DownloadUpdatesThread.h>
 
 /*
 #include "core/web_api/v2/update/Update.h"

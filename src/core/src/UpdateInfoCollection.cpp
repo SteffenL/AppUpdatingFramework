@@ -1,5 +1,5 @@
-#include "UpdateInfoCollection.h"
-#include "UpdateInfoCollectorBase.h"
+#include <aufw/core/UpdateInfoCollection.h>
+#include <aufw/core/UpdateInfoCollectorBase.h>
 #include <json/json.h>
 #include <algorithm>
 

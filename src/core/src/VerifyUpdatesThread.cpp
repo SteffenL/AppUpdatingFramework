@@ -1,4 +1,4 @@
-#include "VerifyUpdatesThread.h"
+#include <aufw/core/VerifyUpdatesThread.h>
 
 /*
 #include "core/web_api/v2/update/Update.h"

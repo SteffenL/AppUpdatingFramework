@@ -1,4 +1,4 @@
-#include "ProcessBase.h"
+#include <aufw/core/ProcessBase.h>
 #include <stdexcept>
 
 namespace aufw {

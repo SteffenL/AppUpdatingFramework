@@ -1,7 +1,7 @@
 #include "../../ApiController.h"
-#include "../../../ProductInstallationInfo.h"
+#include <aufw/core/ProductInstallationInfo.h>
 #include <aufw/core/ProductUpdateDetails.h>
-#include "../../../SearchMethod.h"
+#include <aufw/core/SearchMethod.h>
 #include <string>
 #include <list>
 

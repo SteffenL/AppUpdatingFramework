@@ -1,4 +1,4 @@
-#include "AppCollector.h"
+#include <aufw/core/AppCollector.h>
 #include "FileVersionInfo.h"
 #include <stdexcept>
 

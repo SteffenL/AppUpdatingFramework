@@ -15,5 +15,5 @@ if(WIN32)
     target_compile_definitions(${TARGET_NAME} PRIVATE UNICODE _UNICODE)
 endif()
 
-target_include_directories(${TARGET_NAME} PUBLIC include PRIVATE ../../3rd_party/jsoncpp-0.5.0 ../../3rd_party/nowide)
+target_include_directories(${TARGET_NAME} PUBLIC include ../../3rd_party/jsoncpp-0.5.0 PRIVATE ../../3rd_party/nowide)
 target_link_libraries(${TARGET_NAME} ${CONAN_LIBS})

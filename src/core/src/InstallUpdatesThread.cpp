@@ -1,4 +1,4 @@
-#include "InstallUpdatesThread.h"
+#include <aufw/core/InstallUpdatesThread.h>
 
 #include <aufw/core/progress/ProgressReaderWriter.h>
 #include <aufw/core/progress/Product.h>

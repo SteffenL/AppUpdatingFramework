@@ -1,7 +1,7 @@
-#include "FindUpdatesThread.h"
+#include <aufw/core/FindUpdatesThread.h>
 
 #include "web_api/v2/update/Update.h"
-#include "AppCollector.h"
+#include <aufw/core/AppCollector.h>
 #include <aufw/core/StandardPaths.h>
 #include "exceptions.h"
 

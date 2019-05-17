@@ -1,7 +1,7 @@
 #ifndef __aufw_webapi__UpdateInfoCollection__
 #define __aufw_webapi__UpdateInfoCollection__
 
-#include "ProductInstallationInfo.h"
+#include <aufw/core/ProductInstallationInfo.h>
 #include <list>
 #include <memory>
 

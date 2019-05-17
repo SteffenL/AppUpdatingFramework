@@ -2,7 +2,7 @@
 #define __aufw_webapi__UpdateInfoCollectorBase__
 
 #include <aufw/core/Version.h>
-#include "ProductInstallationInfo.h"
+#include <aufw/core/ProductInstallationInfo.h>
 #include <string>
 
 namespace Json { class Value; }

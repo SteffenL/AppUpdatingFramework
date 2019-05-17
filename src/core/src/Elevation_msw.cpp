@@ -1,4 +1,4 @@
-#include "Elevation_msw.h"
+#include <aufw/core/Elevation_msw.h>
 #include <Windows.h>
 
 namespace aufw {

@@ -1,6 +1,6 @@
 #include "DetailsPrinter.h"
-#include "core/progress/Product.h"
-#include "core/progress/State.h"
+#include <aufw/core/progress/Product.h>
+#include <aufw/core/progress/State.h>
 #include <nowide/iostream.hpp>
 
 using aufw::progress::Product;

@@ -2,7 +2,7 @@
 #define __aufw_webapi__AppCollector__
 
 #include <aufw/core/Version.h>
-#include "UpdateInfoCollectorBase.h"
+#include <aufw/core/UpdateInfoCollectorBase.h>
 #include <string>
 
 namespace aufw {

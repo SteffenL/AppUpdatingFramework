@@ -1,4 +1,4 @@
-#include "UpdateInfoCollectorBase.h"
+#include <aufw/core/UpdateInfoCollectorBase.h>
 #include <json/json.h>
 
 namespace aufw {

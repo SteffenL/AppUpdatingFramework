@@ -1,4 +1,4 @@
-#include "PlainTextVersionCollector.h"
+#include <aufw/core/PlainTextVersionCollector.h>
 #include "FileVersionInfo.h"
 #include "exceptions.h"
 #include <json/json.h>
