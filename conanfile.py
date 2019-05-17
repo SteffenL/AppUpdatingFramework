@@ -18,10 +18,10 @@ class AufwConan(ConanFile):
     )
     requires = (
         "boost/[>=1.66]@conan/stable",
-        "wxwidgets/3.1.1@sl/testing",
+        "wxwidgets/[>=3.1]@langnes/testing",
         "Poco/[>=1.9]@pocoproject/stable",
-        "curlpp/[>=0.8]@sl/testing",
-        "OpenSSL/1.0.2p@conan/stable"
+        "curlpp/[>=0.8]@langnes/testing",
+        "OpenSSL/latest_1.1.1x@conan/stable"
     )
 
     def build(self):
