@@ -4,6 +4,7 @@
 #include <aufw/core/AppCollector.h>
 #include <aufw/core/StandardPaths.h>
 #include "exceptions.h"
+#include "web_api/exceptions.h"
 
 #include <aufw/core/progress/ProgressReaderWriter.h>
 #include <aufw/core/progress/Product.h>
@@ -106,6 +107,13 @@ void* FindUpdatesThread::Entry() {
     // Clone exception for re-throwing in the main thread
     try {
         checkNowInternal();
+    }
+    catch (const web_api::BadServerResponseException& ex) {
+        boost::exception_ptr* exception = new boost::exception_ptr(boost::current_exception());
+        wxCommandEvent event(UpdateErrorEvent);
+        event.SetClientData(exception);
+        event.SetString(ex.what());
+        wxQueueEvent(m_parent, event.Clone());
     }
     catch (...) {
         boost::exception_ptr* exception = new boost::exception_ptr(boost::current_exception());

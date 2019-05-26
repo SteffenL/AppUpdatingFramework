@@ -96,7 +96,7 @@ void ApiController::Impl::SendRequest(const std::string& uri, const Json::Value&
     // Make sure we got something from the server
     const std::string& responseText = responseData.str();
     if (responseText.empty()) {
-        throw std::runtime_error("Server sent an empty response");
+        throw BadServerResponseException("Server sent an empty response");
     }
 
     // Parse response
