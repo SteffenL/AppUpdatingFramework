@@ -1,0 +1,19 @@
+﻿  XmlTestReporter.cpp
+  TimeConstraint.cpp
+  TestRunner.cpp
+  TestResults.cpp
+  TestReporterStdout.cpp
+  TestReporter.cpp
+  TestList.cpp
+  TestDetails.cpp
+  Test.cpp
+  ReportAssert.cpp
+  MemoryOutStream.cpp
+  DeferredTestResult.cpp
+  DeferredTestReporter.cpp
+  CurrentTest.cpp
+  Checks.cpp
+  AssertException.cpp
+  TimeHelpers.cpp
+  Generating Code...
+  UnitTest++.vsnet2012.vcxproj -> C:\p\ih\dise\3rd_party\AppUpdatingFramework\3rd_party\unittest-cpp\UnitTest++\Debug\UnitTest++.vsnet2012.lib

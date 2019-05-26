@@ -1,7 +1,7 @@
 #include "DetailsPrinter.h"
 
-#include "core/progress/ProgressReader.h"
-#include "core/progress/Product.h"
+#include <aufw/core/progress/ProgressReader.h>
+#include <aufw/core/progress/Product.h>
 
 #include <boost/filesystem.hpp>
 #include <nowide/args.hpp>
