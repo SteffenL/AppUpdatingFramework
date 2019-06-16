@@ -1,5 +1,6 @@
 #include <aufw/core/Elevation_msw.h>
 #include <Windows.h>
+#include <stdexcept>
 
 namespace aufw {
 
