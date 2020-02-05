@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 
 class AufwConan(ConanFile):
     name = "AppUpdatingFramework"
-    version = "1.0.0"
+    version = "1.0.1"
     license = "<Put the package license here>"
     url = "<Package recipe repository url here, for issues about the package>"
     description = "<Description of AppUpdatingFramework here>"
@@ -17,11 +17,11 @@ class AufwConan(ConanFile):
         "3rd_party/nowide/*"
     )
     requires = (
-        "boost/[>=1.66]@conan/stable",
+        "boost/[>=1.70]",
         "wxwidgets/[>=3.1]@langnes/testing",
-        "Poco/[>=1.9]@pocoproject/stable",
+        "poco/[>=1.9]",
         "curlpp/[>=0.8]@langnes/testing",
-        "OpenSSL/latest_1.1.1x@conan/stable"
+        "openssl/1.1.1d"
     )
 
     def build(self):
